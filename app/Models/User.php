@@ -33,7 +33,7 @@ class User extends Authenticatable implements FilamentUser
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, Notifiable;
 
-    protected $guard_name = 'web';
+    protected string $guard_name = 'web';
 
     public function canAccessPanel(Panel $panel): bool
     {

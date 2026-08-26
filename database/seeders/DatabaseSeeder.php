@@ -16,11 +16,15 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(RoleSeeder::class);
+        $this->call(NepalLocationSeeder::class);
+        $this->call(SiteSettingSeeder::class);
 
         $admin = User::factory()->create([
             'name' => 'Admin User',
             'email' => 'admin@example.com',
         ]);
         $admin->assignRole('admin');
+
+        $this->call(MarketplaceDemoSeeder::class);
     }
 }

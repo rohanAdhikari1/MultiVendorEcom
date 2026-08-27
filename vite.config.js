@@ -14,6 +14,27 @@ export default defineConfig({
                 bunny('Instrument Sans', {
                     weights: [400, 500, 600],
                 }),
+                bunny('Inter', {
+                    weights: [400, 500, 600],
+                }),
+                bunny('Poppins', {
+                    weights: [400, 500, 600],
+                }),
+                bunny('Roboto', {
+                    weights: [400, 500, 600],
+                }),
+                bunny('Nunito Sans', {
+                    weights: [400, 500, 600],
+                }),
+                bunny('Work Sans', {
+                    weights: [400, 500, 600],
+                }),
+                bunny('DM Sans', {
+                    weights: [400, 500, 600],
+                }),
+                bunny('Plus Jakarta Sans', {
+                    weights: [400, 500, 600],
+                }),
             ],
         }),
         tailwindcss(),

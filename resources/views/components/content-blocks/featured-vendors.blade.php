@@ -12,7 +12,9 @@
 @endphp
 
 @if ($vendors->isNotEmpty())
-    <section class="mx-auto max-w-7xl px-4 py-10 transition-all duration-700 ease-out starting:translate-y-4 starting:opacity-0 sm:px-6 lg:px-8">
+    {{-- py-[var(--section-spacing)]: reads the admin-configurable
+         `layout_density` setting instead of a static py-10. --}}
+    <section class="mx-auto max-w-7xl px-4 py-(--section-spacing) transition-all duration-700 ease-out starting:translate-y-4 starting:opacity-0 sm:px-6 lg:px-8">
         @if ($block->title)
             <h2 class="text-2xl font-bold tracking-tight text-gray-900">{{ $block->title }}</h2>
         @endif

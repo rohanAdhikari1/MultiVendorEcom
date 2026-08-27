@@ -30,7 +30,10 @@
         @endif
     </a>
 
-    <div class="p-3">
+    {{-- p-[var(--card-padding)]: reads the admin-configurable `layout_density`
+         setting (via ThemeSettingsService's runtime CSS variables) instead of
+         a static Tailwind spacing utility. --}}
+    <div class="p-(--card-padding)">
         @if ($product->vendor)
             <a href="{{ route('store.show', $product->vendor->shop_slug) }}" wire:navigate class="text-xs text-gray-500 transition-colors hover:text-primary">
                 {{ $product->vendor->shop_name }}

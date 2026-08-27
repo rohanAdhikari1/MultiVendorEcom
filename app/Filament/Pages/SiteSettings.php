@@ -19,6 +19,9 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use UnitEnum;
 
+/**
+ * @property-read Schema $form
+ */
 class SiteSettings extends Page implements HasForms
 {
     use InteractsWithForms;

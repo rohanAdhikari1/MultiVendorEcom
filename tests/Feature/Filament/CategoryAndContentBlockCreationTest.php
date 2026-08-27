@@ -5,6 +5,7 @@ use App\Filament\Resources\Categories\Pages\CreateCategory;
 use App\Filament\Resources\ContentBlocks\Pages\CreateContentBlock;
 use App\Models\Category;
 use App\Models\ContentBlock;
+use App\Models\Product;
 use App\Models\User;
 use Database\Seeders\RoleSeeder;
 use Livewire\Livewire;
@@ -68,7 +69,7 @@ it('creates a hero content block with the payload packed from type-specific fiel
 });
 
 it('creates a featured products content block with ids packed into payload', function (): void {
-    $products = \App\Models\Product::factory()->count(2)->create();
+    $products = Product::factory()->count(2)->create();
 
     Livewire::actingAs($this->admin)
         ->test(CreateContentBlock::class)

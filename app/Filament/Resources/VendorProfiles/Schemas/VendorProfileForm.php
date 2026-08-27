@@ -5,8 +5,8 @@ namespace App\Filament\Resources\VendorProfiles\Schemas;
 use App\Enums\VendorApplicationStatus;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -58,7 +58,7 @@ class VendorProfileForm
                             ->minValue(0)
                             ->maxValue(100)
                             ->nullable()
-                            ->hintText('Overrides the platform\'s default commission percentage (Settings > Site Settings) for this vendor only. Leave blank to use the platform default.'),
+                            ->helperText('Overrides the platform\'s default commission percentage (Settings > Site Settings) for this vendor only. Leave blank to use the platform default.'),
                         Textarea::make('rejected_reason')
                             ->label('Rejection reason')
                             ->columnSpanFull(),

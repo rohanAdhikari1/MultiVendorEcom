@@ -22,3 +22,10 @@
 [x-cloak] {
     display: none !important;
 }
+
+:root {
+    /* Themes Livewire's built-in wire:navigate progress bar (NProgress,
+       bundled in livewire.js) to match the site's admin-configurable
+       primary color instead of its default blue. */
+    --livewire-progress-bar-color: var(--color-primary);
+}

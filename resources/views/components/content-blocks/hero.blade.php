@@ -10,7 +10,7 @@
     $ctaUrl = $payload['cta_url'] ?? '#';
 @endphp
 
-<section class="relative overflow-hidden bg-gray-900">
+<section class="relative overflow-hidden bg-gray-900 transition-all duration-700 ease-out starting:translate-y-4 starting:opacity-0">
     @if ($imageUrl)
         <img
             src="{{ $imageUrl }}"

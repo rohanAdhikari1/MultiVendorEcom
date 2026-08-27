@@ -12,7 +12,7 @@
 @endphp
 
 @if ($categories->isNotEmpty())
-    <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <section class="mx-auto max-w-7xl px-4 py-10 transition-all duration-700 ease-out starting:translate-y-4 starting:opacity-0 sm:px-6 lg:px-8">
         @if ($block->title)
             <h2 class="text-2xl font-bold tracking-tight text-gray-900">{{ $block->title }}</h2>
         @endif

@@ -2,6 +2,7 @@
 
 namespace App\Actions\Checkout;
 
+use App\Actions\Checkout\Exceptions\CouponNoLongerValidException;
 use App\Actions\Checkout\Exceptions\EmptyCartException;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentMethod;
@@ -9,6 +10,7 @@ use App\Enums\PaymentStatus;
 use App\Enums\VendorSubOrderStatus;
 use App\Models\Address;
 use App\Models\Cart;
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\User;
@@ -29,7 +31,18 @@ class PlaceOrderAction
         private readonly CommissionCalculator $commissionCalculator,
     ) {}
 
-    public function execute(User $user, Address $address, PaymentMethod $paymentMethod): Order
+    /**
+     * @param  Coupon|null  $coupon  A coupon the customer applied earlier in
+     *                               checkout. It is re-validated against the
+     *                               fresh cart subtotal inside the same DB
+     *                               transaction that places the order, so a
+     *                               coupon that expired or hit its max-use
+     *                               cap between "Apply" and "Place Order"
+     *                               never silently applies a stale discount
+     *                               — CouponNoLongerValidException is thrown
+     *                               instead and no order is created.
+     */
+    public function execute(User $user, Address $address, PaymentMethod $paymentMethod, ?Coupon $coupon = null): Order
     {
         $cart = Cart::query()->where('user_id', $user->id)->with('items.product', 'items.vendor')->first();
 
@@ -39,8 +52,26 @@ class PlaceOrderAction
 
         $items = $cart->items;
 
-        return DB::transaction(function () use ($user, $address, $paymentMethod, $cart, $items) {
-            $totals = $this->calculateOrderTotals->execute($items);
+        return DB::transaction(function () use ($user, $address, $paymentMethod, $cart, $items, $coupon) {
+            $appliedCoupon = null;
+
+            if ($coupon !== null) {
+                // Re-fetch so we're validating against the latest used_count
+                // rather than a possibly-stale in-memory instance from when
+                // the customer clicked "Apply" earlier in the request cycle.
+                $freshCoupon = Coupon::query()->find($coupon->id);
+                $subtotalForValidation = $this->calculateOrderTotals->execute($items)['subtotal'];
+
+                if ($freshCoupon === null || ! $freshCoupon->isValidFor($subtotalForValidation)) {
+                    throw new CouponNoLongerValidException(
+                        "Coupon #{$coupon->id} ({$coupon->code}) is no longer valid at order-placement time."
+                    );
+                }
+
+                $appliedCoupon = $freshCoupon;
+            }
+
+            $totals = $this->calculateOrderTotals->execute($items, $appliedCoupon);
 
             $order = Order::query()->create([
                 'order_number' => Order::generateOrderNumber(),
@@ -89,6 +120,14 @@ class PlaceOrderAction
             if ($paymentMethod === PaymentMethod::Cod) {
                 $order->status = OrderStatus::Processing;
                 $order->save();
+            }
+
+            if ($appliedCoupon !== null) {
+                // Atomic at the DB level -- a bare UPDATE ... SET used_count
+                // = used_count + 1, not a check-then-write from PHP -- so a
+                // max_uses: 1 coupon can't be double-spent by two concurrent
+                // requests racing past the isValidFor() check above.
+                Coupon::query()->whereKey($appliedCoupon->id)->increment('used_count');
             }
 
             $cart->items()->delete();

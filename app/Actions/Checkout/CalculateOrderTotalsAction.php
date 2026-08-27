@@ -3,6 +3,7 @@
 namespace App\Actions\Checkout;
 
 use App\Models\CartItem;
+use App\Models\Coupon;
 use Illuminate\Support\Collection;
 
 /**
@@ -13,8 +14,11 @@ use Illuminate\Support\Collection;
  * per-vendor/weight/distance shipping rules are out of scope here and can
  * replace this without touching PlaceOrderAction's call site.
  *
- * discount_total is always 0 — coupon/discount logic is reserved for a
- * later phase.
+ * discount_total is 0 unless a valid Coupon is passed in, in which case it
+ * reflects that coupon's discount for the computed subtotal. The caller
+ * (Checkout / PlaceOrderAction) is responsible for validating the coupon
+ * via Coupon::isValidFor() before passing it here — this action does not
+ * re-validate it, it only computes the discount amount.
  */
 class CalculateOrderTotalsAction
 {
@@ -27,14 +31,14 @@ class CalculateOrderTotalsAction
      * @param  Collection<int, CartItem>  $cartItems
      * @return array{subtotal: float, shipping_total: float, discount_total: float, grand_total: float}
      */
-    public function execute(Collection $cartItems): array
+    public function execute(Collection $cartItems, ?Coupon $coupon = null): array
     {
         $subtotal = round((float) $cartItems->sum(
             fn (CartItem $item) => (float) $item->price_snapshot * $item->quantity
         ), 2);
 
         $shippingTotal = $subtotal > 0 ? self::FLAT_SHIPPING_TOTAL : 0.0;
-        $discountTotal = 0.0;
+        $discountTotal = $coupon !== null ? $coupon->discountFor($subtotal) : 0.0;
 
         $grandTotal = round($subtotal + $shippingTotal - $discountTotal, 2);
 

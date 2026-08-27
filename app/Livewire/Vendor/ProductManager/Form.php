@@ -17,6 +17,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 
 /**
@@ -51,7 +52,7 @@ class Form extends Component
 
     public string $status = 'draft';
 
-    /** @var array<int, \Livewire\Features\SupportFileUploads\TemporaryUploadedFile> */
+    /** @var array<int, TemporaryUploadedFile> */
     public array $newImages = [];
 
     /**
@@ -314,7 +315,7 @@ class Form extends Component
 
             $variantId = $row['id'] ?? null;
             $variant = $variantId !== null
-                ? ProductVariant::query()->where('product_id', $this->product->id)->find($variantId)
+                ? ProductVariant::query()->where('product_id', $this->product->id)->find((int) $variantId)
                 : null;
 
             if ($variant !== null) {

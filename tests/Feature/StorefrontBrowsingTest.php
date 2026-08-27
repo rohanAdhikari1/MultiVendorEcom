@@ -1,12 +1,12 @@
 <?php
 
+use App\Enums\ContentBlockType;
 use App\Enums\ProductStatus;
 use App\Enums\VendorApplicationStatus;
 use App\Models\Category;
 use App\Models\ContentBlock;
 use App\Models\Product;
 use App\Models\VendorProfile;
-use App\Enums\ContentBlockType;
 
 test('the home page returns 200 and renders content blocks', function () {
     $vendor = VendorProfile::factory()->approved()->create(['shop_name' => 'Himalayan Bazaar']);

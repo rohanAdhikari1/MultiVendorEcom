@@ -72,7 +72,7 @@ class ProductCatalog extends Component
     /**
      * @return Collection<int, Category>
      */
-    public function getCategoriesProperty(): Collection
+    protected function activeCategories(): Collection
     {
         return Category::query()->where('is_active', true)->orderBy('sort_order')->orderBy('name')->get();
     }
@@ -103,7 +103,7 @@ class ProductCatalog extends Component
 
         return view('livewire.storefront.product-catalog', [
             'products' => $query->paginate(12),
-            'categories' => $this->categories,
+            'categories' => $this->activeCategories(),
         ]);
     }
 }

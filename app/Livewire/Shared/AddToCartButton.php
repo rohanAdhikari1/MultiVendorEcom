@@ -34,7 +34,11 @@ class AddToCartButton extends Component
 
         $cart = Cart::query()->firstOrCreate(['user_id' => Auth::id()]);
 
-        $price = $variant?->price_override ?? $this->product->price;
+        $price = $this->product->price;
+
+        if ($variant !== null && $variant->price_override !== null) {
+            $price = $variant->price_override;
+        }
 
         $item = CartItem::query()->firstOrNew([
             'cart_id' => $cart->id,

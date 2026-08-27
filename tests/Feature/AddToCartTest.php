@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Shared\AddToCartButton;
+use App\Livewire\Shared\CartIndicator;
 use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\User;
@@ -72,6 +73,6 @@ test('the cart indicator reflects the total quantity across cart items and updat
     Livewire::actingAs($user)->test(AddToCartButton::class, ['product' => $productTwo])->call('add');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Shared\CartIndicator::class)
+        ->test(CartIndicator::class)
         ->assertSet('count', 3);
 });

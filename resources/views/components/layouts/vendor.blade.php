@@ -66,18 +66,56 @@
             </aside>
 
             <div class="min-h-screen flex-1">
-                <header class="border-b border-gray-200 bg-white lg:hidden">
+                <header class="border-b border-gray-200 bg-white lg:hidden" x-data="{ mobileNavOpen: false }">
                     <div class="flex h-14 items-center justify-between gap-4 px-4">
                         <span class="truncate text-sm font-semibold text-primary">{{ $vendorProfile?->shop_name ?? 'Vendor Dashboard' }}</span>
-                        <nav class="flex items-center gap-3 text-sm">
-                            @foreach ($navItems as $item)
-                                <a href="{{ route($item['route']) }}" class="{{ request()->routeIs($item['route'].'*') ? 'font-semibold text-primary' : 'text-gray-600' }}">
-                                    {{ $item['label'] }}
-                                </a>
-                            @endforeach
-                            <a href="{{ url('/') }}" class="text-gray-600">Storefront</a>
-                        </nav>
+
+                        <button
+                            type="button"
+                            id="vendor-mobile-nav-toggle"
+                            class="inline-flex items-center justify-center rounded-md p-2 text-gray-700 transition-colors hover:bg-gray-100"
+                            x-on:click="mobileNavOpen = ! mobileNavOpen"
+                            :aria-expanded="mobileNavOpen.toString()"
+                            aria-controls="vendor-mobile-nav-panel"
+                            aria-label="Toggle navigation menu"
+                        >
+                            <svg x-show="! mobileNavOpen" viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+                            </svg>
+                            <svg x-cloak x-show="mobileNavOpen" viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
                     </div>
+
+                    <nav
+                        id="vendor-mobile-nav-panel"
+                        x-cloak
+                        x-show="mobileNavOpen"
+                        x-transition:enter="transition ease-out duration-200"
+                        x-transition:enter-start="opacity-0 -translate-y-2"
+                        x-transition:enter-end="opacity-100 translate-y-0"
+                        x-transition:leave="transition ease-in duration-150"
+                        x-transition:leave-start="opacity-100 translate-y-0"
+                        x-transition:leave-end="opacity-0 -translate-y-2"
+                        class="flex flex-col gap-1 border-t border-gray-100 px-3 py-3"
+                    >
+                        @foreach ($navItems as $item)
+                            <a
+                                href="{{ route($item['route']) }}"
+                                @class([
+                                    'block rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                                    'bg-primary/10 text-primary' => request()->routeIs($item['route'].'*'),
+                                    'text-gray-700 hover:bg-gray-100' => ! request()->routeIs($item['route'].'*'),
+                                ])
+                            >
+                                {{ $item['label'] }}
+                            </a>
+                        @endforeach
+                        <a href="{{ url('/') }}" class="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100">
+                            Storefront
+                        </a>
+                    </nav>
                 </header>
 
                 <main>
@@ -85,5 +123,7 @@
                 </main>
             </div>
         </div>
+
+        <x-ui.toast-container />
     </body>
 </html>

@@ -38,7 +38,7 @@
             Skip to content
         </a>
 
-        <header class="sticky top-0 z-40 border-b border-gray-200 bg-white/90 backdrop-blur">
+        <header class="sticky top-0 z-40 border-b border-gray-200 bg-white/90 backdrop-blur" x-data="{ mobileNavOpen: false }">
             <div class="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
                 <a href="{{ url('/') }}" class="flex shrink-0 items-center gap-2">
                     @if ($logoUrl)
@@ -48,23 +48,93 @@
                     @endif
                 </a>
 
-                <nav class="flex items-center gap-2 sm:gap-4">
+                <div class="flex items-center gap-2 sm:gap-4">
+                    {{-- Cart indicator stays visible at every breakpoint — never tucked inside the collapsed mobile menu. --}}
                     @auth
                         <livewire:shared.cart-indicator />
+                    @endauth
 
-                        <div class="group relative">
-                            <button type="button" class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900">
-                                {{ auth()->user()->name }}
-                            </button>
-                            <div class="invisible absolute right-0 z-10 mt-1 w-40 rounded-md border border-gray-200 bg-white py-1 opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100">
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100">
-                                        Logout
-                                    </button>
-                                </form>
+                    <nav class="hidden items-center gap-2 sm:gap-4 lg:flex">
+                        @auth
+                            <div class="group relative">
+                                <button type="button" class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900">
+                                    {{ auth()->user()->name }}
+                                </button>
+                                <div class="invisible absolute right-0 z-10 mt-1 w-40 rounded-md border border-gray-200 bg-white py-1 opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100">
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100">
+                                            Logout
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
+                        @else
+                            <a
+                                href="{{ route('login') }}"
+                                class="rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900"
+                            >
+                                Login
+                            </a>
+                        @endauth
+                        @if (! auth()->check() || auth()->user()->vendorProfile === null)
+                            <a
+                                href="{{ route('vendor.apply') }}"
+                                class="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90"
+                            >
+                                Become a Vendor
+                            </a>
+                        @else
+                            <a
+                                href="{{ route('vendor.dashboard') }}"
+                                class="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90"
+                            >
+                                Vendor Dashboard
+                            </a>
+                        @endif
+                    </nav>
+
+                    <button
+                        type="button"
+                        id="mobile-nav-toggle"
+                        class="inline-flex items-center justify-center rounded-md p-2 text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900 lg:hidden"
+                        x-on:click="mobileNavOpen = ! mobileNavOpen"
+                        :aria-expanded="mobileNavOpen.toString()"
+                        aria-controls="mobile-nav-panel"
+                        aria-label="Toggle navigation menu"
+                    >
+                        <svg x-show="! mobileNavOpen" viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+                        </svg>
+                        <svg x-cloak x-show="mobileNavOpen" viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            {{-- Mobile nav panel: same links as the desktop nav, stacked, revealed by the hamburger toggle above `lg:`. --}}
+            <div
+                id="mobile-nav-panel"
+                x-cloak
+                x-show="mobileNavOpen"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 -translate-y-2"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 translate-y-0"
+                x-transition:leave-end="opacity-0 -translate-y-2"
+                class="border-t border-gray-200 bg-white px-4 py-4 sm:px-6 lg:hidden"
+            >
+                <nav class="flex flex-col gap-1">
+                    @auth
+                        <span class="px-3 py-2 text-sm font-medium text-gray-500">{{ auth()->user()->name }}</span>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="block w-full rounded-md px-3 py-2 text-left text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900">
+                                Logout
+                            </button>
+                        </form>
                     @else
                         <a
                             href="{{ route('login') }}"
@@ -76,14 +146,14 @@
                     @if (! auth()->check() || auth()->user()->vendorProfile === null)
                         <a
                             href="{{ route('vendor.apply') }}"
-                            class="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90"
+                            class="mt-1 rounded-md bg-primary px-3 py-2 text-center text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90"
                         >
                             Become a Vendor
                         </a>
                     @else
                         <a
                             href="{{ route('vendor.dashboard') }}"
-                            class="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90"
+                            class="mt-1 rounded-md bg-primary px-3 py-2 text-center text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90"
                         >
                             Vendor Dashboard
                         </a>
@@ -121,5 +191,7 @@
                 </p>
             </div>
         </footer>
+
+        <x-ui.toast-container />
     </body>
 </html>

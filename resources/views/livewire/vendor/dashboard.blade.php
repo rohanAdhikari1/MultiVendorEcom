@@ -7,21 +7,29 @@
     <h1 class="text-2xl font-bold tracking-tight text-gray-900">Welcome back, {{ $vendorProfile->shop_name }}</h1>
 
     <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="rounded-lg border border-gray-200 bg-white p-5">
+        <div class="rounded-lg border border-gray-200 bg-white p-5 transition-shadow hover:shadow-md">
             <p class="text-sm text-gray-500">Total orders</p>
-            <p class="mt-1 text-2xl font-semibold text-gray-900">{{ $totalOrders }}</p>
+            <p class="mt-1 text-2xl font-semibold text-gray-900">
+                <x-ui.stat-counter :value="$totalOrders" />
+            </p>
         </div>
-        <div class="rounded-lg border border-gray-200 bg-white p-5">
+        <div class="rounded-lg border border-gray-200 bg-white p-5 transition-shadow hover:shadow-md">
             <p class="text-sm text-gray-500">Total revenue</p>
-            <p class="mt-1 text-2xl font-semibold text-gray-900">{{ Number::currency($totalRevenue, 'NPR') }}</p>
+            <p class="mt-1 text-2xl font-semibold text-gray-900">
+                <x-ui.stat-counter :value="$totalRevenue" prefix="NPR " :decimals="2" />
+            </p>
         </div>
-        <div class="rounded-lg border border-gray-200 bg-white p-5">
+        <div class="rounded-lg border border-gray-200 bg-white p-5 transition-shadow hover:shadow-md">
             <p class="text-sm text-gray-500">Pending fulfillment</p>
-            <p class="mt-1 text-2xl font-semibold text-gray-900">{{ $pendingFulfillmentCount }}</p>
+            <p class="mt-1 text-2xl font-semibold text-gray-900">
+                <x-ui.stat-counter :value="$pendingFulfillmentCount" />
+            </p>
         </div>
-        <div class="rounded-lg border border-gray-200 bg-white p-5">
+        <div class="rounded-lg border border-gray-200 bg-white p-5 transition-shadow hover:shadow-md">
             <p class="text-sm text-gray-500">Published products</p>
-            <p class="mt-1 text-2xl font-semibold text-gray-900">{{ $publishedProductCount }}</p>
+            <p class="mt-1 text-2xl font-semibold text-gray-900">
+                <x-ui.stat-counter :value="$publishedProductCount" />
+            </p>
         </div>
     </div>
 

@@ -2,6 +2,7 @@
 
 use App\Livewire\Shared\AddToCartButton;
 use App\Livewire\Shared\CartIndicator;
+use App\Livewire\Storefront\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\ProductVariant;
@@ -135,7 +136,7 @@ test('a price increase after a product is already in the cart does not change th
     expect((float) $item->price_snapshot)->toBe(1000.0);
 
     Livewire::actingAs($user)
-        ->test(App\Livewire\Storefront\Cart::class)
+        ->test(Cart::class)
         ->assertSee('1,000.00')
         ->assertDontSee('2,500.00');
 });

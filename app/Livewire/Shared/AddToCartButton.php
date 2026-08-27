@@ -30,7 +30,7 @@ class AddToCartButton extends Component
             ? ProductVariant::query()->where('product_id', $this->product->id)->find($this->productVariantId)
             : null;
 
-        $availableStock = $variant?->stock_quantity ?? $this->product->stock_quantity;
+        $availableStock = $variant !== null ? $variant->stock_quantity : $this->product->stock_quantity;
 
         if ($availableStock <= 0) {
             return;

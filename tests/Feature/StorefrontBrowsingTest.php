@@ -7,6 +7,7 @@ use App\Livewire\Storefront\ProductCatalog;
 use App\Models\Category;
 use App\Models\ContentBlock;
 use App\Models\Product;
+use App\Models\User;
 use App\Models\VendorProfile;
 use Livewire\Livewire;
 
@@ -162,7 +163,7 @@ test('an out-of-stock product hides the add-to-cart action on its detail page bu
         'slug' => 'out-of-stock-product',
         'status' => ProductStatus::Published,
     ]);
-    $user = App\Models\User::factory()->create();
+    $user = User::factory()->create();
 
     $response = $this->actingAs($user)->get(route('products.show', $product->slug));
 

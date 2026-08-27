@@ -35,4 +35,35 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Payment Gateways (Phase F)
+    |--------------------------------------------------------------------------
+    |
+    | Nepal-specific payment gateway credentials. No live sandbox
+    | credentials are configured out of the box — see .env.example for the
+    | placeholder keys. base/form/status URLs default to each gateway's
+    | public sandbox endpoints so local development targets sandbox unless
+    | explicitly overridden.
+    |
+    */
+
+    'esewa' => [
+        'form_url' => env('ESEWA_FORM_URL', 'https://rc-epay.esewa.com.np/api/epay/main/v2/form'),
+        'status_url' => env('ESEWA_STATUS_URL', 'https://rc-epay.esewa.com.np/api/epay/transaction/status/'),
+        'product_code' => env('ESEWA_PRODUCT_CODE'),
+        'secret_key' => env('ESEWA_SECRET_KEY'),
+    ],
+
+    'khalti' => [
+        'base_url' => env('KHALTI_BASE_URL', 'https://dev.khalti.com/api/v2/'),
+        'secret_key' => env('KHALTI_SECRET_KEY'),
+    ],
+
+    'fonepay' => [
+        'base_url' => env('FONEPAY_BASE_URL', 'https://clientapi.fonepay.com/api/merchantRequest'),
+        'merchant_code' => env('FONEPAY_MERCHANT_CODE'),
+        'secret_key' => env('FONEPAY_SECRET_KEY'),
+    ],
+
 ];

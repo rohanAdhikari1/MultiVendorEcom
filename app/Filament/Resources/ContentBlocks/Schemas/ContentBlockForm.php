@@ -25,6 +25,17 @@ class ContentBlockForm
      */
     public static function configure(Schema $schema): Schema
     {
+        // `Select::make('type')->options(ContentBlockType::class)` keeps the
+        // live form state as the enum instance itself (not its raw string
+        // value), so every `visible()` check below has to normalize before
+        // comparing — see ContentBlockPayloadMapper::normalizeType() for the
+        // equivalent normalization used once the form has been submitted.
+        $isType = fn (Get $get, ContentBlockType $type): bool => (
+            $get('type') instanceof ContentBlockType
+                ? $get('type')
+                : ContentBlockType::tryFrom((string) $get('type'))
+        ) === $type;
+
         return $schema
             ->components([
                 Select::make('type')
@@ -56,7 +67,7 @@ class ContentBlockForm
                             ->url(),
                     ])
                     ->columns(3)
-                    ->visible(fn (Get $get): bool => $get('type') === ContentBlockType::Hero->value),
+                    ->visible(fn (Get $get): bool => $isType($get, ContentBlockType::Hero)),
 
                 Section::make('Banner content')
                     ->schema([
@@ -70,7 +81,7 @@ class ContentBlockForm
                             ->url(),
                     ])
                     ->columns(2)
-                    ->visible(fn (Get $get): bool => $get('type') === ContentBlockType::Banner->value),
+                    ->visible(fn (Get $get): bool => $isType($get, ContentBlockType::Banner)),
 
                 Section::make('Featured products')
                     ->schema([
@@ -81,7 +92,7 @@ class ContentBlockForm
                             ->searchable()
                             ->preload(),
                     ])
-                    ->visible(fn (Get $get): bool => $get('type') === ContentBlockType::FeaturedProducts->value),
+                    ->visible(fn (Get $get): bool => $isType($get, ContentBlockType::FeaturedProducts)),
 
                 Section::make('Featured categories')
                     ->schema([
@@ -92,7 +103,7 @@ class ContentBlockForm
                             ->searchable()
                             ->preload(),
                     ])
-                    ->visible(fn (Get $get): bool => $get('type') === ContentBlockType::FeaturedCategories->value),
+                    ->visible(fn (Get $get): bool => $isType($get, ContentBlockType::FeaturedCategories)),
 
                 Section::make('Featured vendors')
                     ->schema([
@@ -103,7 +114,7 @@ class ContentBlockForm
                             ->searchable()
                             ->preload(),
                     ])
-                    ->visible(fn (Get $get): bool => $get('type') === ContentBlockType::FeaturedVendors->value),
+                    ->visible(fn (Get $get): bool => $isType($get, ContentBlockType::FeaturedVendors)),
 
                 Section::make('Promo grid items')
                     ->schema([
@@ -122,7 +133,7 @@ class ContentBlockForm
                             ->columns(3)
                             ->addActionLabel('Add item'),
                     ])
-                    ->visible(fn (Get $get): bool => $get('type') === ContentBlockType::PromoGrid->value),
+                    ->visible(fn (Get $get): bool => $isType($get, ContentBlockType::PromoGrid)),
             ]);
     }
 }

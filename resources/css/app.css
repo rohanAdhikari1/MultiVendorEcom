@@ -16,3 +16,9 @@
     --color-secondary: #0ea5e9;
     --color-accent: #f59e0b;
 }
+
+/* Hide Alpine-controlled elements until Alpine has initialized, to avoid a
+   flash of the mobile nav panel / other x-show elements on first paint. */
+[x-cloak] {
+    display: none !important;
+}

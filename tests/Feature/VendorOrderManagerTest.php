@@ -91,6 +91,20 @@ test('a vendor updating their own item persists the new status and recalculates 
     expect($this->order->fresh()->status)->toBe(OrderStatus::Processing);
 });
 
+test('a successful status update dispatches a success toast notification', function () {
+    Livewire::actingAs($this->vendorUserA)
+        ->test(OrderManager::class)
+        ->call('updateStatus', $this->itemA->id, 'processing')
+        ->assertDispatched('notify', message: 'Order status updated to Processing.', type: 'success');
+});
+
+test('an invalid status transition does not dispatch a toast notification', function () {
+    Livewire::actingAs($this->vendorUserA)
+        ->test(OrderManager::class)
+        ->call('updateStatus', $this->itemA->id, 'delivered')
+        ->assertNotDispatched('notify');
+});
+
 test('once every vendor sub-order is shipped the parent order status becomes Shipped', function () {
     Livewire::actingAs($this->vendorUserA)
         ->test(OrderManager::class)

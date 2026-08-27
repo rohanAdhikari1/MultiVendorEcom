@@ -54,6 +54,7 @@ class AddToCartButton extends Component
         $this->added = true;
 
         $this->dispatch('cart-updated');
+        $this->dispatch('notify', message: 'Added to cart.', type: 'success');
     }
 
     public function render(): View

@@ -53,6 +53,8 @@ class OrderManager extends Component
         $orderItem->save();
 
         app(RecalculateOrderStatusAction::class)->execute($orderItem->order);
+
+        $this->dispatch('notify', message: 'Order status updated to '.$newStatusEnum->label().'.', type: 'success');
     }
 
     /**

@@ -97,7 +97,8 @@ test('a vendor can delete their own product', function () {
 
     Livewire::actingAs($this->vendorUser)
         ->test(Index::class)
-        ->call('delete', $product->id);
+        ->call('delete', $product->id)
+        ->assertDispatched('notify', message: 'Product deleted.', type: 'success');
 
     expect(Product::query()->find($product->id))->toBeNull();
 });

@@ -45,6 +45,8 @@ class Index extends Component
         $product->delete();
 
         $this->confirmingDeleteId = null;
+
+        $this->dispatch('notify', message: 'Product deleted.', type: 'success');
     }
 
     public function render(): View

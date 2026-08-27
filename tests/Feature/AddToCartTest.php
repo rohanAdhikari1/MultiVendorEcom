@@ -63,6 +63,17 @@ test('the guest add-to-cart component renders a login link instead of the add ac
         ->assertDontSee('Add to Cart');
 });
 
+test('adding a product to the cart dispatches a success toast notification', function () {
+    $user = User::factory()->create();
+    $vendor = VendorProfile::factory()->approved()->create();
+    $product = Product::factory()->create(['vendor_id' => $vendor->id]);
+
+    Livewire::actingAs($user)
+        ->test(AddToCartButton::class, ['product' => $product])
+        ->call('add')
+        ->assertDispatched('notify', message: 'Added to cart.', type: 'success');
+});
+
 test('the cart indicator reflects the total quantity across cart items and updates on cart-updated', function () {
     $user = User::factory()->create();
     $vendor = VendorProfile::factory()->approved()->create();

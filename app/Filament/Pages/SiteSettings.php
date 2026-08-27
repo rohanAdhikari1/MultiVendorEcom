@@ -2,6 +2,10 @@
 
 namespace App\Filament\Pages;
 
+use App\Enums\BorderRadiusScale;
+use App\Enums\ButtonStyle;
+use App\Enums\LayoutDensity;
+use App\Enums\ShadowStyle;
 use App\Models\SiteSetting;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -89,6 +93,27 @@ class SiteSettings extends Page implements HasForms
                         Select::make('font_family')
                             ->label('Font family')
                             ->options(self::FONT_FAMILY_OPTIONS)
+                            ->required(),
+                    ])
+                    ->columns(2),
+                Section::make('Layout & Style')
+                    ->description('Sitewide visual tone for cards, buttons, and spacing — applies everywhere with no code changes.')
+                    ->schema([
+                        Select::make('border_radius_scale')
+                            ->label('Border radius')
+                            ->options(BorderRadiusScale::class)
+                            ->required(),
+                        Select::make('shadow_style')
+                            ->label('Shadow style')
+                            ->options(ShadowStyle::class)
+                            ->required(),
+                        Select::make('layout_density')
+                            ->label('Layout density')
+                            ->options(LayoutDensity::class)
+                            ->required(),
+                        Select::make('button_style')
+                            ->label('Button style')
+                            ->options(ButtonStyle::class)
                             ->required(),
                     ])
                     ->columns(2),

@@ -41,6 +41,7 @@
                     @foreach ($navItems as $item)
                         <a
                             href="{{ route($item['route']) }}"
+                            wire:navigate
                             @class([
                                 'block rounded-md px-3 py-2 text-sm font-medium transition-colors',
                                 'bg-primary/10 text-primary' => request()->routeIs($item['route'].'*'),
@@ -53,7 +54,7 @@
                 </nav>
 
                 <div class="space-y-1 border-t border-gray-100 px-3 py-4">
-                    <a href="{{ url('/') }}" class="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900">
+                    <a href="{{ url('/') }}" wire:navigate class="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900">
                         &larr; Back to storefront
                     </a>
                     <form method="POST" action="{{ route('logout') }}">
@@ -103,6 +104,7 @@
                         @foreach ($navItems as $item)
                             <a
                                 href="{{ route($item['route']) }}"
+                                wire:navigate
                                 @class([
                                     'block rounded-md px-3 py-2 text-sm font-medium transition-colors',
                                     'bg-primary/10 text-primary' => request()->routeIs($item['route'].'*'),
@@ -112,7 +114,7 @@
                                 {{ $item['label'] }}
                             </a>
                         @endforeach
-                        <a href="{{ url('/') }}" class="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100">
+                        <a href="{{ url('/') }}" wire:navigate class="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100">
                             Storefront
                         </a>
                     </nav>

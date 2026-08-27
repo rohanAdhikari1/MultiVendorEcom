@@ -13,13 +13,13 @@
     $reviewCount = (int) ($product->reviews_count ?? 0);
 @endphp
 
-<div {{ $attributes->class(['group overflow-hidden rounded-lg border border-gray-200 bg-white transition-shadow hover:shadow-md']) }}>
-    <a href="{{ route('products.show', $product->slug) }}" class="block aspect-square w-full overflow-hidden bg-gray-100">
+<div {{ $attributes->class(['group overflow-hidden rounded-lg border border-gray-200 bg-white transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg']) }}>
+    <a href="{{ route('products.show', $product->slug) }}" wire:navigate class="block aspect-square w-full overflow-hidden bg-gray-100">
         @if ($imagePath)
             <img
                 src="{{ Storage::disk('public')->url($imagePath) }}"
                 alt="{{ $product->name }}"
-                class="h-full w-full object-cover transition-transform group-hover:scale-105"
+                class="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
             >
         @else
             <div class="flex h-full w-full items-center justify-center text-gray-300">
@@ -32,12 +32,12 @@
 
     <div class="p-3">
         @if ($product->vendor)
-            <a href="{{ route('store.show', $product->vendor->shop_slug) }}" class="text-xs text-gray-500 hover:text-primary">
+            <a href="{{ route('store.show', $product->vendor->shop_slug) }}" wire:navigate class="text-xs text-gray-500 transition-colors hover:text-primary">
                 {{ $product->vendor->shop_name }}
             </a>
         @endif
 
-        <a href="{{ route('products.show', $product->slug) }}" class="mt-0.5 block truncate text-sm font-medium text-gray-800 hover:text-primary">
+        <a href="{{ route('products.show', $product->slug) }}" wire:navigate class="mt-0.5 block truncate text-sm font-medium text-gray-800 transition-colors hover:text-primary">
             {{ $product->name }}
         </a>
 

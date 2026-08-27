@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\BorderRadiusScale;
+use App\Enums\ButtonStyle;
+use App\Enums\LayoutDensity;
+use App\Enums\ShadowStyle;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -15,6 +19,10 @@ use Illuminate\Support\Carbon;
  * @property string $secondary_color
  * @property string $accent_color
  * @property string $font_family
+ * @property BorderRadiusScale $border_radius_scale
+ * @property ShadowStyle $shadow_style
+ * @property LayoutDensity $layout_density
+ * @property ButtonStyle $button_style
  * @property string $default_commission_percent
  * @property string|null $contact_email
  * @property string|null $contact_phone
@@ -30,6 +38,10 @@ use Illuminate\Support\Carbon;
     'secondary_color',
     'accent_color',
     'font_family',
+    'border_radius_scale',
+    'shadow_style',
+    'layout_density',
+    'button_style',
     'default_commission_percent',
     'contact_email',
     'contact_phone',
@@ -47,6 +59,10 @@ class SiteSetting extends Model
         return [
             'default_commission_percent' => 'decimal:2',
             'social_links' => 'array',
+            'border_radius_scale' => BorderRadiusScale::class,
+            'shadow_style' => ShadowStyle::class,
+            'layout_density' => LayoutDensity::class,
+            'button_style' => ButtonStyle::class,
         ];
     }
 

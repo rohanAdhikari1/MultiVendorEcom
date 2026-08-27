@@ -4,8 +4,13 @@
     use Illuminate\Support\Facades\Storage;
 
     $imagePath = $product->primaryImage?->path;
-    $avgRating = (float) ($product->reviews()->avg('rating') ?? 0);
-    $reviewCount = $product->reviews()->count();
+    // Read the withAvg/withCount aggregates eager-loaded by the caller
+    // (ProductCatalog / VendorShopPage) instead of issuing a fresh
+    // reviews()->avg()/->count() query per card — the previous version of
+    // this component queried live per product, which turned any listing
+    // page into an N+1 (2 extra queries per card, scaling with page size).
+    $avgRating = (float) ($product->reviews_avg_rating ?? 0);
+    $reviewCount = (int) ($product->reviews_count ?? 0);
 @endphp
 
 <div {{ $attributes->class(['group overflow-hidden rounded-lg border border-gray-200 bg-white transition-shadow hover:shadow-md']) }}>

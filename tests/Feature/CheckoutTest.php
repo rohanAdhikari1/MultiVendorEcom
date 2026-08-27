@@ -2,6 +2,7 @@
 
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
+use App\Enums\ProductStatus;
 use App\Livewire\Storefront\Checkout;
 use App\Models\Address;
 use App\Models\Cart;
@@ -179,6 +180,81 @@ test('placing a COD order creates the order and items with correct totals, commi
 
     // Cart is cleared.
     $this->assertDatabaseCount('cart_items', 0);
+});
+
+test('deleting a product that is in a customer\'s cart cascades to remove the cart item, so cart/checkout never crash on an orphaned row', function () {
+    $user = User::factory()->create();
+    $user->assignRole('customer');
+
+    $vendor = VendorProfile::factory()->approved()->create();
+    $product = Product::factory()->create(['vendor_id' => $vendor->id, 'price' => 1000]);
+
+    $cart = Cart::query()->create(['user_id' => $user->id]);
+    CartItem::query()->create([
+        'cart_id' => $cart->id,
+        'product_id' => $product->id,
+        'vendor_id' => $vendor->id,
+        'quantity' => 1,
+        'price_snapshot' => $product->price,
+    ]);
+
+    $product->delete();
+
+    // cart_items.product_id is a cascadeOnDelete() foreign key, so the
+    // orphaned row is scrubbed at the database level -- CartItem::product
+    // is never left pointing at nothing for the Cart/Checkout pages to
+    // dereference.
+    $this->assertDatabaseCount('cart_items', 0);
+
+    $this->actingAs($user)->get(route('cart'))->assertOk();
+    $this->actingAs($user)->get(route('checkout'))->assertRedirect(route('cart'));
+});
+
+test('a product archived after being added to the cart can still be checked out (no delisting guard exists yet -- see report)', function () {
+    $user = User::factory()->create();
+    $user->assignRole('customer');
+
+    $vendor = VendorProfile::factory()->approved()->create();
+    $product = Product::factory()->create(['vendor_id' => $vendor->id, 'price' => 1000, 'status' => ProductStatus::Published]);
+
+    $cart = Cart::query()->create(['user_id' => $user->id]);
+    CartItem::query()->create([
+        'cart_id' => $cart->id,
+        'product_id' => $product->id,
+        'vendor_id' => $vendor->id,
+        'quantity' => 1,
+        'price_snapshot' => $product->price,
+    ]);
+
+    // Vendor delists the product after the customer already added it.
+    $product->update(['status' => ProductStatus::Archived]);
+
+    $this->actingAs($user)->get(route('cart'))->assertOk();
+
+    $province = Province::query()->first();
+    $district = District::query()->where('province_id', $province->id)->first();
+    $address = Address::query()->create([
+        'user_id' => $user->id,
+        'recipient_name' => 'Jane Doe',
+        'phone' => '9800000000',
+        'province_id' => $province->id,
+        'district_id' => $district->id,
+        'municipality' => 'Kathmandu Metro',
+        'ward_no' => '5',
+        'street_address' => 'Baneshwor',
+        'is_default' => true,
+    ]);
+
+    Livewire::actingAs($user)
+        ->test(Checkout::class)
+        ->set('selectedAddressId', $address->id)
+        ->set('paymentMethod', 'cod')
+        ->call('placeOrder');
+
+    // No crash and an order IS created -- Phase 1 has no guard preventing
+    // checkout of a since-archived/delisted product. Flagged in the report
+    // as a business-rule gap, deliberately left unfixed here.
+    $this->assertDatabaseCount('orders', 1);
 });
 
 test('placing an order with an unselected address shows a validation error and does not create an order', function () {

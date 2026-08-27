@@ -29,7 +29,7 @@ class Login extends Component
             return;
         }
 
-        request()->session()->regenerate();
+        session()->regenerate();
 
         $this->redirect(route('home'), navigate: false);
     }

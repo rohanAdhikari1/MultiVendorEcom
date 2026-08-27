@@ -12,6 +12,12 @@ use App\Livewire\Storefront\OrderHistory;
 use App\Livewire\Storefront\ProductCatalog;
 use App\Livewire\Storefront\ProductDetail;
 use App\Livewire\Storefront\VendorShopPage;
+use App\Livewire\Vendor\Dashboard as VendorDashboard;
+use App\Livewire\Vendor\Onboarding\ApplicationForm as VendorApplicationForm;
+use App\Livewire\Vendor\Onboarding\ApplicationStatus as VendorApplicationStatus;
+use App\Livewire\Vendor\OrderManager as VendorOrderManager;
+use App\Livewire\Vendor\ProductManager\Form as VendorProductForm;
+use App\Livewire\Vendor\ProductManager\Index as VendorProductIndex;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -40,6 +46,22 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout', Checkout::class)->name('checkout');
     Route::get('/orders', OrderHistory::class)->name('orders.index');
     Route::get('/orders/{orderNumber}/confirmation', OrderConfirmation::class)->name('orders.confirmation');
+
+    Route::get('/become-a-vendor', VendorApplicationForm::class)->name('vendor.apply');
+    Route::get('/vendor/status', VendorApplicationStatus::class)->name('vendor.status');
+});
+
+// Vendor dashboard: everything here assumes an Approved VendorProfile — the
+// "no profile yet" / "pending" / "rejected" / "suspended" cases are all
+// redirected out by EnsureVendorApproved before a route handler ever runs.
+Route::prefix('vendor')->name('vendor.')->middleware(['auth', 'vendor.approved'])->group(function () {
+    Route::get('/', VendorDashboard::class)->name('dashboard');
+
+    Route::get('/products', VendorProductIndex::class)->name('products.index');
+    Route::get('/products/create', VendorProductForm::class)->name('products.create');
+    Route::get('/products/{product}/edit', VendorProductForm::class)->name('products.edit');
+
+    Route::get('/orders', VendorOrderManager::class)->name('orders.index');
 });
 
 // Gateway redirect-back callbacks arrive unauthenticated — the customer's

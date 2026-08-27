@@ -73,12 +73,21 @@
                             Login
                         </a>
                     @endauth
-                    <a
-                        href="#"
-                        class="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90"
-                    >
-                        Become a Vendor
-                    </a>
+                    @if (! auth()->check() || auth()->user()->vendorProfile === null)
+                        <a
+                            href="{{ route('vendor.apply') }}"
+                            class="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90"
+                        >
+                            Become a Vendor
+                        </a>
+                    @else
+                        <a
+                            href="{{ route('vendor.dashboard') }}"
+                            class="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90"
+                        >
+                            Vendor Dashboard
+                        </a>
+                    @endif
                 </nav>
             </div>
         </header>

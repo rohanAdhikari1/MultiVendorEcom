@@ -26,5 +26,6 @@ class DatabaseSeeder extends Seeder
         $admin->assignRole('admin');
 
         $this->call(MarketplaceDemoSeeder::class);
+        $this->call(ContentBlockSeeder::class);
     }
 }

@@ -32,11 +32,26 @@ class ThemeSettingsService
 
     /**
      * Get the cached singleton site settings row.
+     *
+     * Caches the model's raw attributes (a plain array) rather than the
+     * Eloquent model instance itself: persistent cache stores (database,
+     * file, redis, ...) serialize values with PHP's unserialize(), and
+     * PHP/Laravel restrict which classes are safe to reconstruct that way.
+     * An Eloquent model round-tripped through such a store comes back as
+     * an unusable `__PHP_Incomplete_Class` instead of a `SiteSetting`.
+     * Plain arrays/scalars have no such restriction, so we cache those and
+     * rehydrate a real model instance on every read instead.
      */
     public function settings(): SiteSetting
     {
-        /** @var SiteSetting */
-        return Cache::remember(self::CACHE_KEY, now()->addMinutes(5), fn () => SiteSetting::current());
+        /** @var array<string, mixed> $attributes */
+        $attributes = Cache::remember(
+            self::CACHE_KEY,
+            now()->addMinutes(5),
+            fn () => SiteSetting::current()->getAttributes(),
+        );
+
+        return (new SiteSetting)->newFromBuilder($attributes);
     }
 
     /**

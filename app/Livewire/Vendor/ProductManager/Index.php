@@ -35,7 +35,10 @@ class Index extends Component
 
     public function delete(int $productId): void
     {
-        $product = Product::query()->where('vendor_id', $this->vendorProfile()->id)->findOrFail($productId);
+        // Deliberately not scoped to this vendor's products in the query —
+        // ownership is enforced by the policy so a cross-vendor attempt
+        // fails with an explicit 403 rather than a 404.
+        $product = Product::query()->findOrFail($productId);
 
         $this->authorize('delete', $product);
 

@@ -39,53 +39,56 @@
                         </div>
                     </div>
 
-                    <table class="min-w-full divide-y divide-gray-100 text-sm">
-                        <thead class="bg-white">
-                            <tr>
-                                <th class="px-4 py-2 text-left font-medium text-gray-500">Product</th>
-                                <th class="px-4 py-2 text-left font-medium text-gray-500">Qty</th>
-                                <th class="px-4 py-2 text-left font-medium text-gray-500">Unit price</th>
-                                <th class="px-4 py-2 text-left font-medium text-gray-500">Line total</th>
-                                <th class="px-4 py-2 text-left font-medium text-gray-500">Status</th>
-                                <th class="px-4 py-2 text-left font-medium text-gray-500">Update</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100">
-                            @foreach ($order->items as $item)
-                                @php
-                                    $variant = match ($item->vendor_status) {
-                                        VendorSubOrderStatus::Delivered => 'success',
-                                        VendorSubOrderStatus::Cancelled => 'danger',
-                                        VendorSubOrderStatus::Shipped => 'primary',
-                                        default => 'neutral',
-                                    };
-                                    $nextStatuses = $this->allowedNextStatuses($item->vendor_status);
-                                @endphp
-                                <tr wire:key="order-item-{{ $item->id }}">
-                                    <td class="px-4 py-3 text-gray-900">{{ $item->product_name_snapshot }}</td>
-                                    <td class="px-4 py-3 text-gray-600">{{ $item->quantity }}</td>
-                                    <td class="px-4 py-3 text-gray-600">{{ Number::currency((float) $item->unit_price_snapshot, 'NPR') }}</td>
-                                    <td class="px-4 py-3 text-gray-600">{{ Number::currency((float) $item->line_total, 'NPR') }}</td>
-                                    <td class="px-4 py-3"><x-ui.badge :variant="$variant">{{ $item->vendor_status->label() }}</x-ui.badge></td>
-                                    <td class="px-4 py-3">
-                                        @if (!empty($nextStatuses))
-                                            <select
-                                                wire:change="updateStatus({{ $item->id }}, $event.target.value)"
-                                                class="rounded-md border border-gray-300 px-2 py-1 text-xs shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                                            >
-                                                <option value="">Change status&hellip;</option>
-                                                @foreach ($nextStatuses as $next)
-                                                    <option value="{{ $next->value }}">{{ $next->label() }}</option>
-                                                @endforeach
-                                            </select>
-                                        @else
-                                            <span class="text-xs text-gray-400">&mdash;</span>
-                                        @endif
-                                    </td>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-100 text-sm">
+                            <thead class="bg-white">
+                                <tr>
+                                    <th class="px-4 py-2 text-left font-medium text-gray-500">Product</th>
+                                    <th class="px-4 py-2 text-left font-medium text-gray-500">Qty</th>
+                                    <th class="px-4 py-2 text-left font-medium text-gray-500">Unit price</th>
+                                    <th class="px-4 py-2 text-left font-medium text-gray-500">Line total</th>
+                                    <th class="px-4 py-2 text-left font-medium text-gray-500">Status</th>
+                                    <th class="px-4 py-2 text-left font-medium text-gray-500">Update</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                @foreach ($order->items as $item)
+                                    @php
+                                        $variant = match ($item->vendor_status) {
+                                            VendorSubOrderStatus::Delivered => 'success',
+                                            VendorSubOrderStatus::Cancelled => 'danger',
+                                            VendorSubOrderStatus::Shipped => 'primary',
+                                            default => 'neutral',
+                                        };
+                                        $nextStatuses = $this->allowedNextStatuses($item->vendor_status);
+                                    @endphp
+                                    <tr wire:key="order-item-{{ $item->id }}" wire:loading.class="opacity-50" wire:target="updateStatus" class="transition-opacity">
+                                        <td class="px-4 py-3 text-gray-900">{{ $item->product_name_snapshot }}</td>
+                                        <td class="px-4 py-3 text-gray-600">{{ $item->quantity }}</td>
+                                        <td class="px-4 py-3 text-gray-600">{{ Number::currency((float) $item->unit_price_snapshot, 'NPR') }}</td>
+                                        <td class="px-4 py-3 text-gray-600">{{ Number::currency((float) $item->line_total, 'NPR') }}</td>
+                                        <td class="px-4 py-3"><x-ui.badge :variant="$variant">{{ $item->vendor_status->label() }}</x-ui.badge></td>
+                                        <td class="px-4 py-3">
+                                            @if (!empty($nextStatuses))
+                                                <select
+                                                    wire:change="updateStatus({{ $item->id }}, $event.target.value)"
+                                                    wire:loading.attr="disabled"
+                                                    class="rounded-md border border-gray-300 px-2 py-1 text-xs shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                                                >
+                                                    <option value="">Change status&hellip;</option>
+                                                    @foreach ($nextStatuses as $next)
+                                                        <option value="{{ $next->value }}">{{ $next->label() }}</option>
+                                                    @endforeach
+                                                </select>
+                                            @else
+                                                <span class="text-xs text-gray-400">&mdash;</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             @endforeach
         </div>

@@ -81,8 +81,11 @@
                 <h2 class="text-lg font-semibold text-gray-900">Delete this product?</h2>
                 <p class="mt-1 text-sm text-gray-600">This cannot be undone.</p>
                 <div class="mt-5 flex justify-end gap-3">
-                    <x-ui.button variant="secondary" wire:click="cancelDelete">Cancel</x-ui.button>
-                    <x-ui.button variant="primary" wire:click="delete({{ $confirmingDeleteId }})" class="!bg-red-600">Delete</x-ui.button>
+                    <x-ui.button variant="secondary" wire:click="cancelDelete" wire:loading.attr="disabled" wire:target="delete">Cancel</x-ui.button>
+                    <x-ui.button variant="primary" wire:click="delete({{ $confirmingDeleteId }})" wire:loading.attr="disabled" wire:target="delete" class="bg-red-600!">
+                        <span wire:loading.remove wire:target="delete">Delete</span>
+                        <span wire:loading wire:target="delete">Deleting&hellip;</span>
+                    </x-ui.button>
                 </div>
             </div>
         </div>

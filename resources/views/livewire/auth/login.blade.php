@@ -44,7 +44,7 @@
 
             <button
                 type="submit"
-                class="w-full rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90"
+                class="w-full rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90 disabled:cursor-wait disabled:opacity-75"
                 wire:loading.attr="disabled"
                 wire:target="login"
             >

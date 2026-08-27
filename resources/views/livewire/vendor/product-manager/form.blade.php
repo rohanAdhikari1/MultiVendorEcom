@@ -221,7 +221,10 @@
 
         <div class="flex items-center justify-end gap-3">
             <x-ui.button :href="route('vendor.products.index')" variant="secondary">Cancel</x-ui.button>
-            <x-ui.button type="submit" wire:loading.attr="disabled" wire:target="save">Save product</x-ui.button>
+            <x-ui.button type="submit" wire:loading.attr="disabled" wire:target="save">
+                <span wire:loading.remove wire:target="save">Save product</span>
+                <span wire:loading wire:target="save">Saving&hellip;</span>
+            </x-ui.button>
         </div>
     </form>
 </div>

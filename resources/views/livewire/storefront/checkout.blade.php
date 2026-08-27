@@ -99,7 +99,10 @@
                         </div>
 
                         <div class="flex gap-3">
-                            <x-ui.button type="submit" size="sm">Save Address</x-ui.button>
+                            <x-ui.button type="submit" size="sm" wire:loading.attr="disabled" wire:target="saveAddress">
+                                <span wire:loading.remove wire:target="saveAddress">Save Address</span>
+                                <span wire:loading wire:target="saveAddress">Saving&hellip;</span>
+                            </x-ui.button>
                             @if ($addresses->isNotEmpty())
                                 <x-ui.button type="button" variant="ghost" size="sm" wire:click="cancelNewAddressForm">Cancel</x-ui.button>
                             @endif

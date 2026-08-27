@@ -25,7 +25,12 @@
 
                     <ul class="divide-y divide-gray-100">
                         @foreach ($vendorItems as $item)
-                            <li wire:key="cart-item-{{ $item->id }}" class="flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center">
+                            <li
+                                wire:key="cart-item-{{ $item->id }}"
+                                wire:loading.class="opacity-50"
+                                wire:target="quantities.{{ $item->id }},removeItem({{ $item->id }})"
+                                class="flex flex-col gap-4 px-4 py-4 transition-opacity sm:flex-row sm:items-center"
+                            >
                                 <a href="{{ route('products.show', $item->product->slug) }}" class="h-20 w-20 shrink-0 overflow-hidden rounded-md bg-gray-100">
                                     @if ($item->product->primaryImage)
                                         <img
@@ -67,7 +72,9 @@
                                         type="button"
                                         wire:click="removeItem({{ $item->id }})"
                                         wire:confirm="Remove this item from your cart?"
-                                        class="text-sm text-gray-400 transition-colors hover:text-red-600"
+                                        wire:loading.attr="disabled"
+                                        wire:target="removeItem({{ $item->id }})"
+                                        class="flex h-8 w-8 items-center justify-center rounded-md text-base text-gray-400 transition-colors hover:bg-gray-100 hover:text-red-600"
                                         aria-label="Remove item"
                                     >
                                         &times;

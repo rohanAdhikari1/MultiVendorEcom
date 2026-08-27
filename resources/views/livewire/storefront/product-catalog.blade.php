@@ -72,13 +72,28 @@
                     />
                 </div>
             @else
-                <div wire:loading.class="opacity-50" wire:target="categoryId,minPrice,maxPrice,sort,gotoPage,nextPage,previousPage" class="mt-6 grid grid-cols-2 gap-4 transition-opacity sm:grid-cols-3 xl:grid-cols-4">
+                @php
+                    $catalogLoadingTarget = 'categoryId,minPrice,maxPrice,sort,gotoPage,nextPage,previousPage';
+                @endphp
+
+                {{-- Skeleton placeholders while a filter/sort/page change is in flight. --}}
+                <div wire:loading wire:target="{{ $catalogLoadingTarget }}" class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
+                    @for ($i = 0; $i < 8; $i++)
+                        <div class="overflow-hidden rounded-lg border border-gray-200 p-3">
+                            <x-ui.skeleton class="aspect-square w-full" />
+                            <x-ui.skeleton class="mt-3 h-4 w-3/4" />
+                            <x-ui.skeleton class="mt-2 h-4 w-1/2" />
+                        </div>
+                    @endfor
+                </div>
+
+                <div wire:loading.remove wire:target="{{ $catalogLoadingTarget }}" class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
                     @foreach ($products as $product)
                         <x-ui.product-card :product="$product" wire:key="product-{{ $product->id }}" />
                     @endforeach
                 </div>
 
-                <div class="mt-8">
+                <div wire:loading.remove wire:target="{{ $catalogLoadingTarget }}" class="mt-8">
                     {{ $products->links() }}
                 </div>
             @endif

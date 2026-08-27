@@ -105,7 +105,7 @@ class ThemeSettingsService
 
     /**
      * The current shadow depth style, with the same defensive fallback as
-     * {@see borderRadiusScale()}.
+     * `borderRadiusScale()` above.
      */
     public function shadowStyle(): ShadowStyle
     {
@@ -114,7 +114,7 @@ class ThemeSettingsService
 
     /**
      * The current layout spacing density, with the same defensive fallback
-     * as {@see borderRadiusScale()}.
+     * as `borderRadiusScale()` above.
      */
     public function layoutDensity(): LayoutDensity
     {
@@ -123,7 +123,7 @@ class ThemeSettingsService
 
     /**
      * The current default treatment for `x-ui.button`'s primary variant,
-     * with the same defensive fallback as {@see borderRadiusScale()}.
+     * with the same defensive fallback as `borderRadiusScale()` above.
      * Consumed directly by the `x-ui.button` component to resolve which
      * variant classes to render when no explicit `variant` prop is given.
      */

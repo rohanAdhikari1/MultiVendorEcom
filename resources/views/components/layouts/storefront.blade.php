@@ -49,12 +49,30 @@
                 </a>
 
                 <nav class="flex items-center gap-2 sm:gap-4">
-                    <a
-                        href="#"
-                        class="rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900"
-                    >
-                        Login
-                    </a>
+                    @auth
+                        <livewire:shared.cart-indicator />
+
+                        <div class="group relative">
+                            <button type="button" class="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900">
+                                {{ auth()->user()->name }}
+                            </button>
+                            <div class="invisible absolute right-0 z-10 mt-1 w-40 rounded-md border border-gray-200 bg-white py-1 opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100">
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100">
+                                        Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @else
+                        <a
+                            href="{{ route('login') }}"
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900"
+                        >
+                            Login
+                        </a>
+                    @endauth
                     <a
                         href="#"
                         class="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90"

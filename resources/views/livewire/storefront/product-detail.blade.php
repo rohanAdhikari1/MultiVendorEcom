@@ -72,7 +72,7 @@
             @if ($product->variants->isNotEmpty())
                 <div class="mt-6">
                     <label for="variant" class="block text-sm font-medium text-gray-700">Choose an option</label>
-                    <select id="variant" class="mt-1 block w-full max-w-xs rounded-md border border-gray-300 py-2 pl-3 pr-8 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                    <select id="variant" class="mt-1 block w-full max-w-xs rounded-md border border-gray-300 py-2 pl-3 pr-8 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
                         @foreach ($product->variants as $variant)
                             <option value="{{ $variant->id }}">
                                 {{ collect($variant->attributes ?? [])->map(fn ($value, $key) => "{$key}: {$value}")->implode(', ') ?: $variant->sku }}

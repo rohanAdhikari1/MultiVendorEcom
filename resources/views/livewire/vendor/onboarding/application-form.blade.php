@@ -10,7 +10,7 @@
                     type="text"
                     id="shopName"
                     wire:model.blur="shopName"
-                    class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 >
                 @error('shopName')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -19,7 +19,7 @@
 
             <div>
                 <label for="shopSlug" class="block text-sm font-medium text-gray-700">Shop URL</label>
-                <div class="mt-1 flex items-center rounded-md border border-gray-300 shadow-sm focus-within:border-primary focus-within:ring-1 focus-within:ring-primary">
+                <div class="mt-1 flex items-center rounded-md border border-gray-300 shadow-sm transition duration-150 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary">
                     <span class="pl-3 text-sm text-gray-400">{{ url('/store') }}/</span>
                     <input
                         type="text"
@@ -39,7 +39,7 @@
                     id="description"
                     wire:model="description"
                     rows="4"
-                    class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 ></textarea>
                 @error('description')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

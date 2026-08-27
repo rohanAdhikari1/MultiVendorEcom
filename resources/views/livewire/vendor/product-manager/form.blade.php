@@ -18,7 +18,7 @@
                         type="text"
                         id="name"
                         wire:model.blur="name"
-                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     >
                     @error('name')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -31,7 +31,7 @@
                         type="text"
                         id="slug"
                         wire:model.blur="slug"
-                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     >
                     @error('slug')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -43,7 +43,7 @@
                     <select
                         id="categoryId"
                         wire:model="categoryId"
-                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     >
                         <option value="">Select a category</option>
                         @foreach ($categories as $category)
@@ -61,7 +61,7 @@
                         type="text"
                         id="sku"
                         wire:model="sku"
-                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     >
                     @error('sku')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -74,7 +74,7 @@
                         id="description"
                         wire:model="description"
                         rows="4"
-                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     ></textarea>
                     @error('description')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -93,7 +93,7 @@
                         type="number" step="0.01" min="0"
                         id="price"
                         wire:model="price"
-                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     >
                     @error('price')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -106,7 +106,7 @@
                         type="number" step="0.01" min="0"
                         id="compareAtPrice"
                         wire:model="compareAtPrice"
-                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     >
                     @error('compareAtPrice')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -119,7 +119,7 @@
                         type="number" step="1" min="0"
                         id="stockQuantity"
                         wire:model="stockQuantity"
-                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     >
                     @error('stockQuantity')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -131,7 +131,7 @@
                     <select
                         id="status"
                         wire:model="status"
-                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     >
                         @foreach ($statuses as $statusCase)
                             <option value="{{ $statusCase->value }}">{{ $statusCase->label() }}</option>
@@ -205,12 +205,12 @@
                 <div class="mt-4 space-y-3">
                     @foreach ($variantRows as $index => $row)
                         <div wire:key="variant-row-{{ $index }}" class="grid grid-cols-2 gap-3 rounded-md border border-gray-100 p-3 sm:grid-cols-6">
-                            <input type="text" wire:model="variantRows.{{ $index }}.size" placeholder="Size" class="rounded-md border border-gray-300 px-2 py-1.5 text-sm">
-                            <input type="text" wire:model="variantRows.{{ $index }}.color" placeholder="Color" class="rounded-md border border-gray-300 px-2 py-1.5 text-sm">
-                            <input type="text" wire:model="variantRows.{{ $index }}.sku" placeholder="SKU" class="rounded-md border border-gray-300 px-2 py-1.5 text-sm">
-                            <input type="number" step="0.01" min="0" wire:model="variantRows.{{ $index }}.priceOverride" placeholder="Price override" class="rounded-md border border-gray-300 px-2 py-1.5 text-sm">
-                            <input type="number" step="1" min="0" wire:model="variantRows.{{ $index }}.stockQuantity" placeholder="Stock" class="rounded-md border border-gray-300 px-2 py-1.5 text-sm">
-                            <button type="button" wire:click="removeVariantRow({{ $index }})" class="text-sm font-medium text-red-600 hover:underline">Remove</button>
+                            <input type="text" wire:model="variantRows.{{ $index }}.size" placeholder="Size" class="rounded-md border border-gray-300 px-2 py-1.5 text-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                            <input type="text" wire:model="variantRows.{{ $index }}.color" placeholder="Color" class="rounded-md border border-gray-300 px-2 py-1.5 text-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                            <input type="text" wire:model="variantRows.{{ $index }}.sku" placeholder="SKU" class="rounded-md border border-gray-300 px-2 py-1.5 text-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                            <input type="number" step="0.01" min="0" wire:model="variantRows.{{ $index }}.priceOverride" placeholder="Price override" class="rounded-md border border-gray-300 px-2 py-1.5 text-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                            <input type="number" step="1" min="0" wire:model="variantRows.{{ $index }}.stockQuantity" placeholder="Stock" class="rounded-md border border-gray-300 px-2 py-1.5 text-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                            <button type="button" wire:click="removeVariantRow({{ $index }})" class="text-sm font-medium text-red-600 transition-colors hover:underline">Remove</button>
                         </div>
                     @endforeach
                 </div>

@@ -21,7 +21,7 @@
         x-model.number="qty"
         min="{{ $min }}"
         max="{{ $max }}"
-        class="h-9 w-12 border-x border-gray-300 text-center text-sm [appearance:textfield] focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+        class="h-9 w-12 border-x border-gray-300 text-center text-sm transition duration-150 [appearance:textfield] focus:outline-none focus:ring-1 focus:ring-inset focus:ring-primary [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
     >
 
     <button

@@ -11,7 +11,7 @@
                     id="name"
                     wire:model="name"
                     autocomplete="name"
-                    class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 >
                 @error('name')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -25,7 +25,7 @@
                     id="email"
                     wire:model="email"
                     autocomplete="email"
-                    class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 >
                 @error('email')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -39,7 +39,7 @@
                     id="password"
                     wire:model="password"
                     autocomplete="new-password"
-                    class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 >
                 @error('password')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -53,13 +53,13 @@
                     id="password_confirmation"
                     wire:model="password_confirmation"
                     autocomplete="new-password"
-                    class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 >
             </div>
 
             <button
                 type="submit"
-                class="w-full rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:opacity-90 disabled:cursor-wait disabled:opacity-75"
+                class="w-full rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition duration-150 hover:opacity-90 active:scale-95 disabled:cursor-wait disabled:opacity-75 disabled:active:scale-100"
                 wire:loading.attr="disabled"
                 wire:target="register"
             >

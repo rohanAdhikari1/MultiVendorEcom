@@ -12,7 +12,7 @@
             <select
                 id="statusFilter"
                 wire:model.live="statusFilter"
-                class="rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                class="rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             >
                 <option value="">All statuses</option>
                 @foreach ($statuses as $statusCase)
@@ -73,7 +73,7 @@
                                                 <select
                                                     wire:change="updateStatus({{ $item->id }}, $event.target.value)"
                                                     wire:loading.attr="disabled"
-                                                    class="rounded-md border border-gray-300 px-2 py-1 text-xs shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                                                    class="rounded-md border border-gray-300 px-2 py-1 text-xs shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                                                 >
                                                     <option value="">Change status&hellip;</option>
                                                     @foreach ($nextStatuses as $next)

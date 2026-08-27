@@ -49,17 +49,17 @@
                         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Recipient Name</label>
-                                <input type="text" wire:model="newRecipientName" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                                <input type="text" wire:model="newRecipientName" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
                                 @error('newRecipientName') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Phone</label>
-                                <input type="text" wire:model="newPhone" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                                <input type="text" wire:model="newPhone" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
                                 @error('newPhone') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Province</label>
-                                <select wire:model.live="newProvinceId" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                                <select wire:model.live="newProvinceId" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
                                     <option value="">Select province&hellip;</option>
                                     @foreach ($provinces as $province)
                                         <option value="{{ $province->id }}">{{ $province->name }}</option>
@@ -69,7 +69,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">District</label>
-                                <select wire:model="newDistrictId" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" @disabled(! $newProvinceId)>
+                                <select wire:model="newDistrictId" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary" @disabled(! $newProvinceId)>
                                     <option value="">Select district&hellip;</option>
                                     @foreach ($districts as $district)
                                         <option value="{{ $district->id }}">{{ $district->name }}</option>
@@ -79,22 +79,22 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Municipality</label>
-                                <input type="text" wire:model="newMunicipality" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                                <input type="text" wire:model="newMunicipality" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
                                 @error('newMunicipality') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Ward No.</label>
-                                <input type="text" wire:model="newWardNo" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                                <input type="text" wire:model="newWardNo" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
                                 @error('newWardNo') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                             </div>
                             <div class="sm:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700">Street Address</label>
-                                <input type="text" wire:model="newStreetAddress" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                                <input type="text" wire:model="newStreetAddress" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
                                 @error('newStreetAddress') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                             </div>
                             <div class="sm:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700">Label <span class="font-normal text-gray-400">(optional, e.g. Home, Office)</span></label>
-                                <input type="text" wire:model="newLabel" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+                                <input type="text" wire:model="newLabel" class="mt-1 block w-full rounded-md border border-gray-300 py-2 px-3 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
                             </div>
                         </div>
 

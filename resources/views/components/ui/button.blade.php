@@ -14,7 +14,7 @@
     ];
 
     $classes = trim(
-        'inline-flex items-center justify-center gap-2 rounded-md font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 '
+        'inline-flex items-center justify-center gap-2 rounded-md font-semibold transition duration-150 ease-out active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 '
         .($variants[$variant] ?? $variants['primary']).' '
         .($sizes[$size] ?? $sizes['md'])
     );

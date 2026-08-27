@@ -22,23 +22,25 @@
 
         <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             @foreach ($products as $product)
-                <a href="#" class="group overflow-hidden rounded-lg border border-gray-200 transition-shadow hover:shadow-md">
-                    <div class="aspect-square w-full overflow-hidden bg-gray-100">
-                        @if ($product->primaryImage?->path)
-                            <img
-                                src="{{ Storage::disk('public')->url($product->primaryImage->path) }}"
-                                alt="{{ $product->name }}"
-                                class="h-full w-full object-cover transition-transform group-hover:scale-105"
-                            >
-                        @endif
-                    </div>
-                    <div class="p-3">
-                        <p class="truncate text-sm font-medium text-gray-800">{{ $product->name }}</p>
-                        <p class="mt-1 text-sm font-semibold text-primary">
-                            {{ Number::currency((float) $product->price, 'NPR') }}
-                        </p>
-                    </div>
-                </a>
+                <x-ui.reveal :delay="($loop->index % 8) * 60">
+                    <a href="#" class="group overflow-hidden rounded-lg border border-gray-200 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg">
+                        <div class="aspect-square w-full overflow-hidden bg-gray-100">
+                            @if ($product->primaryImage?->path)
+                                <img
+                                    src="{{ Storage::disk('public')->url($product->primaryImage->path) }}"
+                                    alt="{{ $product->name }}"
+                                    class="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+                                >
+                            @endif
+                        </div>
+                        <div class="p-3">
+                            <p class="truncate text-sm font-medium text-gray-800">{{ $product->name }}</p>
+                            <p class="mt-1 text-sm font-semibold text-primary">
+                                {{ Number::currency((float) $product->price, 'NPR') }}
+                            </p>
+                        </div>
+                    </a>
+                </x-ui.reveal>
             @endforeach
         </div>
     </section>

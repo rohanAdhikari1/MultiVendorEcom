@@ -47,7 +47,9 @@
             @else
                 <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
                     @foreach ($products as $product)
-                        <x-ui.product-card :product="$product" wire:key="product-{{ $product->id }}" />
+                        <x-ui.reveal :delay="($loop->index % 8) * 60" wire:key="product-{{ $product->id }}">
+                            <x-ui.product-card :product="$product" />
+                        </x-ui.reveal>
                     @endforeach
                 </div>
 

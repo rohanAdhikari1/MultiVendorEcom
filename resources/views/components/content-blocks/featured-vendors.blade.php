@@ -22,25 +22,27 @@
 
         <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             @foreach ($vendors as $vendor)
-                <a href="#" class="flex items-center gap-4 rounded-lg border border-gray-200 p-4 transition-colors hover:border-primary">
-                    <div class="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100">
-                        @if ($vendor->logo_path)
-                            <img
-                                src="{{ Storage::disk('public')->url($vendor->logo_path) }}"
-                                alt="{{ $vendor->shop_name }}"
-                                class="h-full w-full object-cover"
-                            >
-                        @else
-                            <span class="text-lg font-semibold text-secondary">{{ Str::substr($vendor->shop_name, 0, 1) }}</span>
-                        @endif
-                    </div>
-                    <div class="min-w-0">
-                        <p class="truncate text-sm font-semibold text-gray-900">{{ $vendor->shop_name }}</p>
-                        @if ($vendor->description)
-                            <p class="truncate text-xs text-gray-600">{{ $vendor->description }}</p>
-                        @endif
-                    </div>
-                </a>
+                <x-ui.reveal :delay="($loop->index % 6) * 70">
+                    <a href="#" class="flex items-center gap-4 rounded-lg border border-gray-200 p-4 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-primary hover:shadow-lg">
+                        <div class="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-100">
+                            @if ($vendor->logo_path)
+                                <img
+                                    src="{{ Storage::disk('public')->url($vendor->logo_path) }}"
+                                    alt="{{ $vendor->shop_name }}"
+                                    class="h-full w-full object-cover"
+                                >
+                            @else
+                                <span class="text-lg font-semibold text-secondary">{{ Str::substr($vendor->shop_name, 0, 1) }}</span>
+                            @endif
+                        </div>
+                        <div class="min-w-0">
+                            <p class="truncate text-sm font-semibold text-gray-900">{{ $vendor->shop_name }}</p>
+                            @if ($vendor->description)
+                                <p class="truncate text-xs text-gray-600">{{ $vendor->description }}</p>
+                            @endif
+                        </div>
+                    </a>
+                </x-ui.reveal>
             @endforeach
         </div>
     </section>

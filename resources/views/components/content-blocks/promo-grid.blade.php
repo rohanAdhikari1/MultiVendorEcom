@@ -17,22 +17,24 @@
 
         <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             @foreach ($items as $item)
-                <a href="{{ $item['link_url'] ?? '#' }}" class="group overflow-hidden rounded-lg border border-gray-200">
-                    @if (! empty($item['image']))
-                        <div class="aspect-video w-full overflow-hidden bg-gray-100">
-                            <img
-                                src="{{ Storage::disk('public')->url($item['image']) }}"
-                                alt="{{ $item['title'] ?? '' }}"
-                                class="h-full w-full object-cover transition-transform group-hover:scale-105"
-                            >
-                        </div>
-                    @endif
-                    @if (! empty($item['title']))
-                        <div class="p-3">
-                            <p class="text-sm font-medium text-gray-800">{{ $item['title'] }}</p>
-                        </div>
-                    @endif
-                </a>
+                <x-ui.reveal :delay="($loop->index % 6) * 70">
+                    <a href="{{ $item['link_url'] ?? '#' }}" class="group overflow-hidden rounded-lg border border-gray-200 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg">
+                        @if (! empty($item['image']))
+                            <div class="aspect-video w-full overflow-hidden bg-gray-100">
+                                <img
+                                    src="{{ Storage::disk('public')->url($item['image']) }}"
+                                    alt="{{ $item['title'] ?? '' }}"
+                                    class="h-full w-full object-cover transition-transform duration-300 ease-out group-hover:scale-105"
+                                >
+                            </div>
+                        @endif
+                        @if (! empty($item['title']))
+                            <div class="p-3">
+                                <p class="text-sm font-medium text-gray-800">{{ $item['title'] }}</p>
+                            </div>
+                        @endif
+                    </a>
+                </x-ui.reveal>
             @endforeach
         </div>
     </section>

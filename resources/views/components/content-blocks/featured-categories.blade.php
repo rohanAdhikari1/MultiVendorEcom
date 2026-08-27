@@ -22,20 +22,22 @@
 
         <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             @foreach ($categories as $category)
-                <a href="#" class="group flex flex-col items-center gap-3 rounded-lg border border-gray-200 p-4 text-center transition-colors hover:border-primary">
-                    <div class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-gray-100">
-                        @if ($category->image_path)
-                            <img
-                                src="{{ Storage::disk('public')->url($category->image_path) }}"
-                                alt="{{ $category->name }}"
-                                class="h-full w-full object-cover"
-                            >
-                        @else
-                            <span class="text-lg font-semibold text-secondary">{{ Str::substr($category->name, 0, 1) }}</span>
-                        @endif
-                    </div>
-                    <span class="text-sm font-medium text-gray-800 group-hover:text-primary">{{ $category->name }}</span>
-                </a>
+                <x-ui.reveal :delay="($loop->index % 10) * 50">
+                    <a href="#" class="group flex flex-col items-center gap-3 rounded-lg border border-gray-200 p-4 text-center transition-all duration-300 ease-out hover:-translate-y-1 hover:border-primary hover:shadow-lg">
+                        <div class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-gray-100 transition-transform duration-300 ease-out group-hover:scale-105">
+                            @if ($category->image_path)
+                                <img
+                                    src="{{ Storage::disk('public')->url($category->image_path) }}"
+                                    alt="{{ $category->name }}"
+                                    class="h-full w-full object-cover"
+                                >
+                            @else
+                                <span class="text-lg font-semibold text-secondary">{{ Str::substr($category->name, 0, 1) }}</span>
+                            @endif
+                        </div>
+                        <span class="text-sm font-medium text-gray-800 group-hover:text-primary">{{ $category->name }}</span>
+                    </a>
+                </x-ui.reveal>
             @endforeach
         </div>
     </section>

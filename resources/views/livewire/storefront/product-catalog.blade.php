@@ -14,7 +14,7 @@
                     <select
                         id="category"
                         wire:model.live="categoryId"
-                        class="mt-1 block w-full rounded-md border border-gray-300 py-2 pl-3 pr-8 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                        class="mt-1 block w-full rounded-md border border-gray-300 py-2 pl-3 pr-8 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     >
                         <option value="">All categories</option>
                         @foreach ($categories as $category)
@@ -32,7 +32,7 @@
                             step="0.01"
                             wire:model.live.debounce.400ms="minPrice"
                             placeholder="Min"
-                            class="block w-full rounded-md border border-gray-300 px-2 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                            class="block w-full rounded-md border border-gray-300 px-2 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                         >
                         <span class="text-gray-400">&ndash;</span>
                         <input
@@ -41,7 +41,7 @@
                             step="0.01"
                             wire:model.live.debounce.400ms="maxPrice"
                             placeholder="Max"
-                            class="block w-full rounded-md border border-gray-300 px-2 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                            class="block w-full rounded-md border border-gray-300 px-2 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                         >
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                     <select
                         id="sort"
                         wire:model.live="sort"
-                        class="mt-1 block w-full rounded-md border border-gray-300 py-2 pl-3 pr-8 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                        class="mt-1 block w-full rounded-md border border-gray-300 py-2 pl-3 pr-8 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                     >
                         <option value="newest">Newest</option>
                         <option value="price_asc">Price: Low to High</option>
@@ -89,7 +89,9 @@
 
                 <div wire:loading.remove wire:target="{{ $catalogLoadingTarget }}" class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
                     @foreach ($products as $product)
-                        <x-ui.product-card :product="$product" wire:key="product-{{ $product->id }}" />
+                        <x-ui.reveal :delay="($loop->index % 8) * 60" wire:key="product-{{ $product->id }}">
+                            <x-ui.product-card :product="$product" />
+                        </x-ui.reveal>
                     @endforeach
                 </div>
 

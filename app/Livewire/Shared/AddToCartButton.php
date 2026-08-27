@@ -30,6 +30,12 @@ class AddToCartButton extends Component
             ? ProductVariant::query()->where('product_id', $this->product->id)->find($this->productVariantId)
             : null;
 
+        $availableStock = $variant?->stock_quantity ?? $this->product->stock_quantity;
+
+        if ($availableStock <= 0) {
+            return;
+        }
+
         $quantity = max(1, $this->quantity);
 
         $cart = Cart::query()->firstOrCreate(['user_id' => Auth::id()]);

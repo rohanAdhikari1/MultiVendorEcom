@@ -131,6 +131,23 @@ test('a second vendor gets a 403 attempting to delete another vendor\'s product'
     expect(Product::query()->find($product->id))->not->toBeNull();
 });
 
+test('creating a product with a slug that collides with another vendor\'s product fails validation', function () {
+    Product::factory()->create(['slug' => 'taken-product-slug']);
+
+    Livewire::actingAs($this->vendorUser)
+        ->test(Form::class)
+        ->set('name', 'Another Product')
+        ->set('slug', 'taken-product-slug')
+        ->set('categoryId', $this->category->id)
+        ->set('price', '500')
+        ->set('stockQuantity', '5')
+        ->set('status', 'draft')
+        ->call('save')
+        ->assertHasErrors(['slug']);
+
+    $this->assertDatabaseCount('products', 1);
+});
+
 test('a non-approved vendor cannot reach the product create form via the route', function () {
     $pendingUser = User::factory()->create();
     $pendingUser->assignRole('vendor');

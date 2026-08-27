@@ -14,6 +14,22 @@ test('it uses the vendor\'s commission override when present', function () {
     expect($result['vendorEarning'])->toBe(850.0);
 });
 
+test('a vendor commission override of exactly 0 is honored as a real 0%, not treated as unset', function () {
+    // 0 is falsy in PHP but a legitimate, explicit override (e.g. a
+    // promotional zero-commission vendor) — the calculator must use a
+    // strict `!== null` check, not a `?:`/truthiness check, or this would
+    // incorrectly fall back to the platform default instead.
+    SiteSetting::query()->create(['id' => 1, 'default_commission_percent' => 12.5]);
+
+    $vendor = VendorProfile::factory()->approved()->create(['commission_override_percent' => 0]);
+
+    $result = (new CommissionCalculator)->calculate($vendor, 1000.0);
+
+    expect($result['percent'])->toBe(0.0);
+    expect($result['commission'])->toBe(0.0);
+    expect($result['vendorEarning'])->toBe(1000.0);
+});
+
 test('it falls back to the platform default commission percent when the vendor has no override', function () {
     SiteSetting::query()->create(['id' => 1, 'default_commission_percent' => 12.5]);
 

@@ -125,6 +125,46 @@ it('excludes a cancelled line item from an otherwise fully delivered order', fun
     expect($order->fresh()->status)->toBe(OrderStatus::Delivered);
 });
 
+it('derives Processing for a single-item order still pending', function () {
+    $order = makeOrderWithItemStatuses([VendorSubOrderStatus::Pending]);
+
+    app(RecalculateOrderStatusAction::class)->execute($order);
+
+    expect($order->fresh()->status)->toBe(OrderStatus::Processing);
+});
+
+it('derives Processing for a single-item order still processing', function () {
+    $order = makeOrderWithItemStatuses([VendorSubOrderStatus::Processing]);
+
+    app(RecalculateOrderStatusAction::class)->execute($order);
+
+    expect($order->fresh()->status)->toBe(OrderStatus::Processing);
+});
+
+it('derives Shipped for a single-item order that has shipped', function () {
+    $order = makeOrderWithItemStatuses([VendorSubOrderStatus::Shipped]);
+
+    app(RecalculateOrderStatusAction::class)->execute($order);
+
+    expect($order->fresh()->status)->toBe(OrderStatus::Shipped);
+});
+
+it('derives Delivered for a single-item order that has been delivered', function () {
+    $order = makeOrderWithItemStatuses([VendorSubOrderStatus::Delivered]);
+
+    app(RecalculateOrderStatusAction::class)->execute($order);
+
+    expect($order->fresh()->status)->toBe(OrderStatus::Delivered);
+});
+
+it('derives Cancelled for a single-item order that was cancelled', function () {
+    $order = makeOrderWithItemStatuses([VendorSubOrderStatus::Cancelled]);
+
+    app(RecalculateOrderStatusAction::class)->execute($order);
+
+    expect($order->fresh()->status)->toBe(OrderStatus::Cancelled);
+});
+
 it('never touches payment_status', function () {
     $order = makeOrderWithItemStatuses([VendorSubOrderStatus::Delivered]);
     $order->payment_status = PaymentStatus::Paid;

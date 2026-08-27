@@ -81,6 +81,8 @@ class ProductCatalog extends Component
     {
         $query = Product::query()
             ->with(['vendor', 'primaryImage'])
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
             ->where('status', ProductStatus::Published);
 
         $query->when($this->categoryId, fn (Builder $builder) => $builder->where('category_id', $this->categoryId));

@@ -29,6 +29,8 @@ class VendorShopPage extends Component
     {
         $products = $this->vendor->products()
             ->with(['vendor', 'primaryImage'])
+            ->withAvg('reviews', 'rating')
+            ->withCount('reviews')
             ->where('status', ProductStatus::Published)
             ->orderByDesc('created_at')
             ->paginate(12);

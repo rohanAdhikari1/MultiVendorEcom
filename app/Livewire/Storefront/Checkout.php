@@ -3,12 +3,14 @@
 namespace App\Livewire\Storefront;
 
 use App\Actions\Checkout\CalculateOrderTotalsAction;
+use App\Actions\Checkout\Exceptions\CouponNoLongerValidException;
 use App\Actions\Checkout\PlaceOrderAction;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentTransactionStatus;
 use App\Models\Address;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Coupon;
 use App\Models\District;
 use App\Models\PaymentTransaction;
 use App\Models\Province;
@@ -17,6 +19,7 @@ use App\Services\Payments\PaymentGatewayManager;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -45,6 +48,12 @@ class Checkout extends Component
     public string $newStreetAddress = '';
 
     public string $paymentMethod = 'cod';
+
+    public string $couponCode = '';
+
+    public ?int $appliedCouponId = null;
+
+    public ?string $appliedCouponCode = null;
 
     public function mount(): void
     {
@@ -126,6 +135,49 @@ class Checkout extends Component
         $this->reset(['newLabel', 'newRecipientName', 'newPhone', 'newProvinceId', 'newDistrictId', 'newMunicipality', 'newWardNo', 'newStreetAddress']);
     }
 
+    /**
+     * Looks up the entered code (case-insensitively -- codes are always
+     * stored uppercase) and, if it's currently usable against the cart's
+     * subtotal, applies it so the order summary reflects the discount
+     * immediately. An unknown/expired/inactive code shows an inline error
+     * instead of applying anything.
+     */
+    public function applyCoupon(): void
+    {
+        $this->resetErrorBag('couponCode');
+
+        $code = trim($this->couponCode);
+
+        if ($code === '') {
+            $this->addError('couponCode', 'Please enter a coupon code.');
+
+            return;
+        }
+
+        $subtotal = app(CalculateOrderTotalsAction::class)->execute($this->currentCartItems())['subtotal'];
+
+        $coupon = Coupon::query()->where('code', Str::upper($code))->first();
+
+        if ($coupon === null || ! $coupon->isValidFor($subtotal)) {
+            $this->appliedCouponId = null;
+            $this->appliedCouponCode = null;
+            $this->addError('couponCode', 'This coupon code is invalid, expired, or no longer applies to your order.');
+
+            return;
+        }
+
+        $this->appliedCouponId = $coupon->id;
+        $this->appliedCouponCode = $coupon->code;
+    }
+
+    public function removeCoupon(): void
+    {
+        $this->appliedCouponId = null;
+        $this->appliedCouponCode = null;
+        $this->couponCode = '';
+        $this->resetErrorBag('couponCode');
+    }
+
     public function placeOrder(PlaceOrderAction $placeOrderAction, PaymentGatewayManager $gatewayManager): void
     {
         $this->validate([
@@ -148,7 +200,17 @@ class Checkout extends Component
         /** @var User $user */
         $user = Auth::user();
 
-        $order = $placeOrderAction->execute($user, $address, $method);
+        $coupon = $this->appliedCouponId !== null ? Coupon::query()->find($this->appliedCouponId) : null;
+
+        try {
+            $order = $placeOrderAction->execute($user, $address, $method, $coupon);
+        } catch (CouponNoLongerValidException) {
+            $this->appliedCouponId = null;
+            $this->appliedCouponCode = null;
+            $this->addError('couponCode', 'Your coupon is no longer valid (it may have expired or reached its usage limit). Please review your order and try again.');
+
+            return;
+        }
 
         $this->dispatch('cart-updated');
 
@@ -220,7 +282,8 @@ class Checkout extends Component
     public function render(): View
     {
         $items = $this->currentCartItems();
-        $totals = app(CalculateOrderTotalsAction::class)->execute($items);
+        $coupon = $this->resolveAppliedCoupon($items);
+        $totals = app(CalculateOrderTotalsAction::class)->execute($items, $coupon);
 
         return view('livewire.storefront.checkout', [
             'addresses' => $this->addresses(),
@@ -231,6 +294,37 @@ class Checkout extends Component
             'paymentMethods' => PaymentMethod::cases(),
             'itemsByVendor' => $items->groupBy(fn (CartItem $item) => $item->vendor_id),
             'totals' => $totals,
+            'appliedCoupon' => $coupon,
         ]);
+    }
+
+    /**
+     * Re-validates the applied coupon (if any) against the current cart
+     * subtotal on every render, so the order summary never shows a stale
+     * discount -- e.g. if the cart changed since "Apply" was clicked and
+     * the subtotal no longer meets the coupon's min_order_amount, the
+     * discount is transparently dropped from the displayed totals here
+     * (final placement-time validation still happens in PlaceOrderAction
+     * regardless).
+     *
+     * @param  Collection<int, CartItem>  $items
+     */
+    protected function resolveAppliedCoupon(Collection $items): ?Coupon
+    {
+        if ($this->appliedCouponId === null) {
+            return null;
+        }
+
+        $coupon = Coupon::query()->find($this->appliedCouponId);
+        $subtotal = app(CalculateOrderTotalsAction::class)->execute($items)['subtotal'];
+
+        if ($coupon === null || ! $coupon->isValidFor($subtotal)) {
+            $this->appliedCouponId = null;
+            $this->appliedCouponCode = null;
+
+            return null;
+        }
+
+        return $coupon;
     }
 }

@@ -158,6 +158,32 @@
             <div class="sticky top-24 rounded-lg border border-gray-200 p-5">
                 <h2 class="text-base font-semibold text-gray-900">Order Summary</h2>
 
+                {{-- Coupon code --}}
+                <div class="mt-4 border-b border-gray-100 pb-4">
+                    @if ($appliedCoupon)
+                        <div class="flex items-center justify-between rounded-md bg-green-50 px-3 py-2 text-sm">
+                            <span class="font-medium text-green-800">Coupon "{{ $appliedCoupon->code }}" applied</span>
+                            <button type="button" wire:click="removeCoupon" class="text-xs font-medium text-green-700 hover:underline">Remove</button>
+                        </div>
+                    @else
+                        <div class="flex gap-2">
+                            <input
+                                type="text"
+                                wire:model="couponCode"
+                                wire:keydown.enter.prevent="applyCoupon"
+                                placeholder="Coupon code"
+                                class="block w-full rounded-md border border-gray-300 py-2 px-3 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                            >
+                            <x-ui.button type="button" variant="ghost" size="sm" wire:click="applyCoupon" wire:loading.attr="disabled" wire:target="applyCoupon">
+                                Apply
+                            </x-ui.button>
+                        </div>
+                        @error('couponCode')
+                            <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
+                        @enderror
+                    @endif
+                </div>
+
                 <dl class="mt-4 space-y-2 text-sm">
                     <div class="flex justify-between">
                         <dt class="text-gray-600">Subtotal</dt>
@@ -169,7 +195,7 @@
                     </div>
                     <div class="flex justify-between">
                         <dt class="text-gray-600">Discount</dt>
-                        <dd class="text-gray-900">{{ Illuminate\Support\Number::currency($totals['discount_total'], 'NPR') }}</dd>
+                        <dd class="text-gray-900">-{{ Illuminate\Support\Number::currency($totals['discount_total'], 'NPR') }}</dd>
                     </div>
                     <div class="flex justify-between border-t border-gray-100 pt-2 text-base font-semibold">
                         <dt class="text-gray-900">Total</dt>

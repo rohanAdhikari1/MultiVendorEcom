@@ -2,15 +2,19 @@
 
 namespace App\Filament\Resources\VendorProfiles\Tables;
 
+use App\Actions\Payouts\CreateVendorPayoutBatchAction;
 use App\Enums\VendorApplicationStatus;
 use App\Models\VendorProfile;
 use Filament\Actions\Action;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Textarea;
+use Filament\Notifications\Notification;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Carbon;
 
 class VendorProfilesTable
 {
@@ -93,6 +97,45 @@ class VendorProfilesTable
                     ->action(fn (VendorProfile $record) => $record->update([
                         'status' => VendorApplicationStatus::Suspended,
                     ])),
+                Action::make('generatePayout')
+                    ->label('Generate Payout')
+                    ->icon(Heroicon::OutlinedBanknotes)
+                    ->color('primary')
+                    ->visible(fn (VendorProfile $record): bool => $record->status === VendorApplicationStatus::Approved)
+                    ->schema([
+                        DatePicker::make('period_start')
+                            ->label('Period start')
+                            ->native(false)
+                            ->helperText('Leave blank to include everything eligible to date.'),
+                        DatePicker::make('period_end')
+                            ->label('Period end')
+                            ->native(false)
+                            ->helperText('Leave blank to include everything eligible to date.'),
+                    ])
+                    ->modalDescription('Batches every Delivered item not yet in a payout into a new payout for this vendor.')
+                    ->action(function (VendorProfile $record, array $data): void {
+                        $payout = app(CreateVendorPayoutBatchAction::class)->execute(
+                            $record,
+                            filled($data['period_start'] ?? null) ? Carbon::parse($data['period_start'])->startOfDay() : null,
+                            filled($data['period_end'] ?? null) ? Carbon::parse($data['period_end'])->endOfDay() : null,
+                        );
+
+                        if ($payout === null) {
+                            Notification::make()
+                                ->title('Nothing to pay out')
+                                ->body('This vendor has no delivered items awaiting payout for the selected period.')
+                                ->warning()
+                                ->send();
+
+                            return;
+                        }
+
+                        Notification::make()
+                            ->title('Payout batch generated')
+                            ->body('Rs. '.number_format((float) $payout->total_earnings, 2).' across the eligible items.')
+                            ->success()
+                            ->send();
+                    }),
             ]);
     }
 }

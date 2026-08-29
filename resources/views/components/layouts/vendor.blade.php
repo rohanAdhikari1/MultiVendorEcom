@@ -9,6 +9,7 @@
         ['route' => 'vendor.dashboard', 'label' => 'Dashboard'],
         ['route' => 'vendor.products.index', 'label' => 'Products'],
         ['route' => 'vendor.orders.index', 'label' => 'Orders'],
+        ['route' => 'vendor.reviews.index', 'label' => 'Reviews'],
     ];
 @endphp
 <!DOCTYPE html>

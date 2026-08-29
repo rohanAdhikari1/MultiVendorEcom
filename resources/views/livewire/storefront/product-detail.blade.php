@@ -104,6 +104,16 @@
                         @if ($review->body)
                             <p class="mt-2 text-sm text-gray-600">{{ $review->body }}</p>
                         @endif
+
+                        @if ($review->vendor_reply)
+                            <div class="mt-3 ml-4 rounded-md border-l-2 border-primary/30 bg-gray-50 px-4 py-3">
+                                <p class="text-xs font-semibold text-gray-700">
+                                    Reply from {{ $product->vendor?->shop_name }}
+                                </p>
+                                <p class="mt-1 text-sm text-gray-600">{{ $review->vendor_reply }}</p>
+                                <p class="mt-1 text-xs text-gray-400">{{ $review->vendor_replied_at?->format('M j, Y') }}</p>
+                            </div>
+                        @endif
                     </div>
                 @endforeach
             </div>

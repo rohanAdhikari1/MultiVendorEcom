@@ -17,12 +17,14 @@ use Illuminate\Support\Carbon;
  * @property int $rating
  * @property string|null $body
  * @property bool $is_visible
+ * @property string|null $vendor_reply
+ * @property Carbon|null $vendor_replied_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Product $product
  * @property-read User $user
  */
-#[Fillable(['product_id', 'user_id', 'order_item_id', 'rating', 'body', 'is_visible'])]
+#[Fillable(['product_id', 'user_id', 'order_item_id', 'rating', 'body', 'is_visible', 'vendor_reply', 'vendor_replied_at'])]
 class Review extends Model
 {
     /**
@@ -36,6 +38,7 @@ class Review extends Model
             'order_item_id' => 'integer',
             'rating' => 'integer',
             'is_visible' => 'boolean',
+            'vendor_replied_at' => 'datetime',
         ];
     }
 

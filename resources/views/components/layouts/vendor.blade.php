@@ -21,6 +21,9 @@
 
         <title>{{ isset($title) ? $title.' - Vendor Dashboard' : 'Vendor Dashboard' }} - {{ $settings->site_name }}</title>
 
+        {{-- This entire area is an authenticated back-office -- never indexable. --}}
+        <meta name="robots" content="noindex, nofollow">
+
         <link rel="icon" href="/favicon.ico" sizes="any">
 
         <style>{!! $themeService->cssVariables() !!}</style>

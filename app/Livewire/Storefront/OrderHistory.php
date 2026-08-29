@@ -22,6 +22,7 @@ class OrderHistory extends Component
             ->orderByDesc('placed_at')
             ->paginate(10);
 
-        return view('livewire.storefront.order-history', ['orders' => $orders]);
+        return view('livewire.storefront.order-history', ['orders' => $orders])
+            ->layoutData(['title' => 'My Orders']);
     }
 }

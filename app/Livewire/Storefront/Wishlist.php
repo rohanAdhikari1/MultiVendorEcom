@@ -45,6 +45,6 @@ class Wishlist extends Component
 
         return view('livewire.storefront.wishlist', [
             'products' => $products,
-        ]);
+        ])->layoutData(['title' => 'Wishlist']);
     }
 }

@@ -295,7 +295,7 @@ class Checkout extends Component
             'itemsByVendor' => $items->groupBy(fn (CartItem $item) => $item->vendor_id),
             'totals' => $totals,
             'appliedCoupon' => $coupon,
-        ]);
+        ])->layoutData(['title' => 'Checkout']);
     }
 
     /**

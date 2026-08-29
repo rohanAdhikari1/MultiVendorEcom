@@ -14,6 +14,8 @@ use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\User;
+use App\Models\VendorProfile;
+use App\Notifications\NewOrderReceived;
 use App\Services\Commission\CommissionCalculator;
 use Illuminate\Support\Facades\DB;
 
@@ -52,7 +54,7 @@ class PlaceOrderAction
 
         $items = $cart->items;
 
-        return DB::transaction(function () use ($user, $address, $paymentMethod, $cart, $items, $coupon) {
+        $order = DB::transaction(function () use ($user, $address, $paymentMethod, $cart, $items, $coupon) {
             $appliedCoupon = null;
 
             if ($coupon !== null) {
@@ -134,5 +136,28 @@ class PlaceOrderAction
 
             return $order->fresh(['items']) ?? $order;
         });
+
+        // Notifications are dispatched only after the transaction has
+        // committed — an order that rolled back partway through should
+        // never have vendors notified about it.
+        $this->notifyVendors($order);
+
+        return $order;
+    }
+
+    /**
+     * Notifies each distinct vendor represented in the order with their
+     * own per-vendor item summary and earning — never a generic blast
+     * that leaks another vendor's items/earning.
+     */
+    private function notifyVendors(Order $order): void
+    {
+        $vendorIds = $order->items->pluck('vendor_id')->unique();
+
+        $vendors = VendorProfile::query()->with('user')->whereIn('id', $vendorIds)->get();
+
+        foreach ($vendors as $vendor) {
+            $vendor->user->notify(new NewOrderReceived($order, $vendor));
+        }
     }
 }

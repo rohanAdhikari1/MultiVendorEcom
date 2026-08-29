@@ -5,6 +5,7 @@ namespace App\Actions\Orders;
 use App\Enums\OrderStatus;
 use App\Enums\VendorSubOrderStatus;
 use App\Models\Order;
+use App\Notifications\OrderStatusUpdated;
 
 /**
  * Derives an Order's overall fulfillment status from the vendor_status of
@@ -44,6 +45,13 @@ class RecalculateOrderStatusAction
         if ($order->status !== $newStatus) {
             $order->status = $newStatus;
             $order->save();
+
+            // Only an actual transition into Shipped/Delivered notifies the
+            // customer -- never fired on a no-op recalculation that leaves
+            // status unchanged, and never for any other status value.
+            if (in_array($newStatus, [OrderStatus::Shipped, OrderStatus::Delivered], true)) {
+                $order->user->notify(new OrderStatusUpdated($order, $newStatus));
+            }
         }
 
         return $order;

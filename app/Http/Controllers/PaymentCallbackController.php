@@ -8,6 +8,7 @@ use App\Enums\PaymentStatus;
 use App\Enums\PaymentTransactionStatus;
 use App\Models\Order;
 use App\Models\PaymentTransaction;
+use App\Notifications\OrderPaymentConfirmed;
 use App\Services\Payments\PaymentGatewayManager;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -81,6 +82,8 @@ class PaymentCallbackController extends Controller
             }
 
             $order->save();
+
+            $order->user->notify(new OrderPaymentConfirmed($order));
 
             return redirect()->route('orders.confirmation', $order->order_number);
         }

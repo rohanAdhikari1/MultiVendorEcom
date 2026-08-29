@@ -69,9 +69,16 @@ class SiteSetting extends Model
     /**
      * Get the single settings row, creating it with defaults if it
      * does not exist yet.
+     *
+     * `firstOrCreate()` only sets `id` on the in-memory instance it
+     * inserts — every other column's DB-level default (site_name,
+     * primary_color, etc.) is never reflected back into that object, so a
+     * just-created row is re-fetched to pick up the real stored defaults.
      */
     public static function current(): self
     {
-        return static::query()->firstOrCreate(['id' => 1]);
+        $settings = static::query()->firstOrCreate(['id' => 1]);
+
+        return $settings->wasRecentlyCreated ? $settings->fresh() ?? $settings : $settings;
     }
 }

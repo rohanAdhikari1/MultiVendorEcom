@@ -119,4 +119,32 @@
             </div>
         @endif
     </div>
+
+    @if ($relatedProducts->isNotEmpty())
+        <x-ui.reveal class="mt-16 border-t border-gray-200 pt-10">
+            <h2 class="text-xl font-bold text-gray-900">You might also like</h2>
+
+            <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
+                @foreach ($relatedProducts as $relatedProduct)
+                    <x-ui.reveal :delay="($loop->index % 8) * 60" wire:key="related-{{ $relatedProduct->id }}">
+                        <x-ui.product-card :product="$relatedProduct" />
+                    </x-ui.reveal>
+                @endforeach
+            </div>
+        </x-ui.reveal>
+    @endif
+
+    @if ($recentlyViewedProducts->isNotEmpty())
+        <x-ui.reveal class="mt-16 border-t border-gray-200 pt-10">
+            <h2 class="text-xl font-bold text-gray-900">Recently Viewed</h2>
+
+            <div class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
+                @foreach ($recentlyViewedProducts as $viewedProduct)
+                    <x-ui.reveal :delay="($loop->index % 8) * 60" wire:key="recently-viewed-{{ $viewedProduct->id }}">
+                        <x-ui.product-card :product="$viewedProduct" />
+                    </x-ui.reveal>
+                @endforeach
+            </div>
+        </x-ui.reveal>
+    @endif
 </div>

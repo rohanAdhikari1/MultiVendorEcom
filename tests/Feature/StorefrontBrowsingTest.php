@@ -7,6 +7,7 @@ use App\Livewire\Storefront\ProductCatalog;
 use App\Models\Category;
 use App\Models\ContentBlock;
 use App\Models\Product;
+use App\Models\Review;
 use App\Models\User;
 use App\Models\VendorProfile;
 use Livewire\Livewire;
@@ -224,6 +225,179 @@ test('the last page of an exact-multiple product count renders the correct remai
         ->set('sort', 'price_asc')
         ->call('gotoPage', 3)
         ->assertOk();
+});
+
+test('searching by name matches, searching by description matches, and an unmatched term is case-insensitive and empty', function () {
+    $vendor = VendorProfile::factory()->approved()->create();
+
+    Product::factory()->create([
+        'vendor_id' => $vendor->id,
+        'name' => 'Wireless Earbuds',
+        'description' => 'Great for the gym.',
+        'status' => ProductStatus::Published,
+    ]);
+    Product::factory()->create([
+        'vendor_id' => $vendor->id,
+        'name' => 'Leather Wallet',
+        'description' => 'Handmade with premium earbud-grade stitching.',
+        'status' => ProductStatus::Published,
+    ]);
+    Product::factory()->create([
+        'vendor_id' => $vendor->id,
+        'name' => 'Denim Jacket',
+        'description' => 'Classic fit.',
+        'status' => ProductStatus::Published,
+    ]);
+
+    // Matches by name.
+    $response = $this->get(route('products.index', ['q' => 'Earbuds']));
+    $response->assertOk();
+    $response->assertSee('Wireless Earbuds');
+    $response->assertDontSee('Denim Jacket');
+
+    // Matches by description (product name itself does not contain the term).
+    $response = $this->get(route('products.index', ['q' => 'earbud-grade']));
+    $response->assertOk();
+    $response->assertSee('Leather Wallet');
+    $response->assertDontSee('Denim Jacket');
+
+    // Case-insensitive.
+    $response = $this->get(route('products.index', ['q' => 'WIRELESS EARBUDS']));
+    $response->assertOk();
+    $response->assertSee('Wireless Earbuds');
+
+    // Unmatched term: zero results, correct empty state referencing the term.
+    $response = $this->get(route('products.index', ['q' => 'nonexistent-term-xyz']));
+    $response->assertOk();
+    $response->assertSee('No products found for "nonexistent-term-xyz"');
+    $response->assertDontSee('Wireless Earbuds');
+});
+
+test('search combines with other filters using AND semantics', function () {
+    $vendor = VendorProfile::factory()->approved()->create();
+    $electronics = Category::factory()->create(['name' => 'Electronics', 'is_active' => true]);
+    $fashion = Category::factory()->create(['name' => 'Fashion', 'is_active' => true]);
+
+    // Matches search + category + in stock: should appear.
+    Product::factory()->create([
+        'vendor_id' => $vendor->id,
+        'category_id' => $electronics->id,
+        'name' => 'Wireless Speaker',
+        'stock_quantity' => 5,
+        'status' => ProductStatus::Published,
+    ]);
+
+    // Matches search but wrong category: should not appear when category filter applied.
+    Product::factory()->create([
+        'vendor_id' => $vendor->id,
+        'category_id' => $fashion->id,
+        'name' => 'Wireless Beanie',
+        'stock_quantity' => 5,
+        'status' => ProductStatus::Published,
+    ]);
+
+    // Matches search + category but out of stock: should not appear when in-stock-only applied.
+    Product::factory()->create([
+        'vendor_id' => $vendor->id,
+        'category_id' => $electronics->id,
+        'name' => 'Wireless Charger',
+        'stock_quantity' => 0,
+        'status' => ProductStatus::Published,
+    ]);
+
+    Livewire::test(ProductCatalog::class)
+        ->set('search', 'Wireless')
+        ->set('categoryId', $electronics->id)
+        ->set('inStockOnly', true)
+        ->assertOk()
+        ->assertSee('Wireless Speaker')
+        ->assertDontSee('Wireless Beanie')
+        ->assertDontSee('Wireless Charger');
+});
+
+test('the minimum rating filter narrows results using the already eager-loaded reviews average', function () {
+    $vendor = VendorProfile::factory()->approved()->create();
+
+    $highRated = Product::factory()->create([
+        'vendor_id' => $vendor->id,
+        'name' => 'Five Star Product',
+        'status' => ProductStatus::Published,
+    ]);
+    Review::query()->create([
+        'product_id' => $highRated->id,
+        'user_id' => User::factory()->create()->id,
+        'rating' => 5,
+        'body' => 'Excellent.',
+        'is_visible' => true,
+    ]);
+
+    $lowRated = Product::factory()->create([
+        'vendor_id' => $vendor->id,
+        'name' => 'Two Star Product',
+        'status' => ProductStatus::Published,
+    ]);
+    Review::query()->create([
+        'product_id' => $lowRated->id,
+        'user_id' => User::factory()->create()->id,
+        'rating' => 2,
+        'body' => 'Not great.',
+        'is_visible' => true,
+    ]);
+
+    Livewire::test(ProductCatalog::class)
+        ->set('minRating', '4')
+        ->assertOk()
+        ->assertSee('Five Star Product')
+        ->assertDontSee('Two Star Product');
+});
+
+test('the q query string deep-links a pre-filled search on mount', function () {
+    $vendor = VendorProfile::factory()->approved()->create();
+    Product::factory()->create([
+        'vendor_id' => $vendor->id,
+        'name' => 'Deep Link Gadget',
+        'status' => ProductStatus::Published,
+    ]);
+    Product::factory()->create([
+        'vendor_id' => $vendor->id,
+        'name' => 'Unrelated Item',
+        'status' => ProductStatus::Published,
+    ]);
+
+    $response = $this->get(route('products.index', ['q' => 'Deep Link']));
+
+    $response->assertOk();
+    $response->assertSee('Deep Link Gadget');
+    $response->assertDontSee('Unrelated Item');
+});
+
+test('the header search form is a GET form pointing at the product catalog with a q field', function () {
+    $response = $this->get(route('home'));
+
+    $response->assertOk();
+    $response->assertSee('action="'.route('products.index').'"', false);
+    $response->assertSee('name="q"', false);
+    $response->assertSee('method="GET"', false);
+});
+
+test('submitting the header search query string returns matching products from the catalog route', function () {
+    $vendor = VendorProfile::factory()->approved()->create();
+    Product::factory()->create([
+        'vendor_id' => $vendor->id,
+        'name' => 'Himalayan Salt Lamp',
+        'status' => ProductStatus::Published,
+    ]);
+    Product::factory()->create([
+        'vendor_id' => $vendor->id,
+        'name' => 'Bamboo Cutting Board',
+        'status' => ProductStatus::Published,
+    ]);
+
+    $response = $this->get('/products?q=Himalayan+Salt');
+
+    $response->assertOk();
+    $response->assertSee('Himalayan Salt Lamp');
+    $response->assertDontSee('Bamboo Cutting Board');
 });
 
 test('a product name containing a script tag is rendered escaped, not executed, on the catalog and detail pages', function () {

@@ -10,6 +10,17 @@
                 </div>
 
                 <div class="mt-4">
+                    <label for="search" class="block text-xs font-medium text-gray-700">Search</label>
+                    <input
+                        id="search"
+                        type="search"
+                        wire:model.live.debounce.400ms="search"
+                        placeholder="Search products&hellip;"
+                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    >
+                </div>
+
+                <div class="mt-4">
                     <label for="category" class="block text-xs font-medium text-gray-700">Category</label>
                     <select
                         id="category"
@@ -58,6 +69,29 @@
                         <option value="price_desc">Price: High to Low</option>
                     </select>
                 </div>
+
+                <div class="mt-4">
+                    <label for="minRating" class="block text-xs font-medium text-gray-700">Minimum rating</label>
+                    <select
+                        id="minRating"
+                        wire:model.live="minRating"
+                        class="mt-1 block w-full rounded-md border border-gray-300 py-2 pl-3 pr-8 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                    >
+                        <option value="">Any rating</option>
+                        <option value="4">4+ stars</option>
+                        <option value="3">3+ stars</option>
+                    </select>
+                </div>
+
+                <div class="mt-4 flex items-center gap-2">
+                    <input
+                        id="inStockOnly"
+                        type="checkbox"
+                        wire:model.live="inStockOnly"
+                        class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                    >
+                    <label for="inStockOnly" class="text-sm text-gray-700">In stock only</label>
+                </div>
             </div>
         </aside>
 
@@ -65,15 +99,23 @@
             <h1 class="text-2xl font-bold tracking-tight text-gray-900">All Products</h1>
 
             @if ($products->isEmpty())
+                @php
+                    $trimmedSearch = trim($search);
+                    $emptyStateTitle = $trimmedSearch !== '' ? "No products found for \"{$trimmedSearch}\"" : 'No products found';
+                @endphp
                 <div class="mt-6">
                     <x-ui.empty-state
-                        title="No products found"
+                        :title="$emptyStateTitle"
                         message="Try adjusting your filters or check back later."
-                    />
+                    >
+                        <x-ui.button variant="secondary" size="sm" type="button" wire:click="resetFilters">
+                            Clear filters
+                        </x-ui.button>
+                    </x-ui.empty-state>
                 </div>
             @else
                 @php
-                    $catalogLoadingTarget = 'categoryId,minPrice,maxPrice,sort,gotoPage,nextPage,previousPage';
+                    $catalogLoadingTarget = 'search,categoryId,minPrice,maxPrice,sort,inStockOnly,minRating,gotoPage,nextPage,previousPage';
                 @endphp
 
                 {{-- Skeleton placeholders while a filter/sort/page change is in flight. --}}

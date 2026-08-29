@@ -82,6 +82,60 @@ test('the product catalog does not issue more queries as more products are shown
     expect($fullPageCount)->toBeLessThan(15);
 });
 
+test('the product catalog with search, in-stock, and minimum rating filters active does not issue more queries as more products are shown on the page', function () {
+    $vendor = VendorProfile::factory()->approved()->create();
+    $category = Category::factory()->create(['is_active' => true]);
+
+    $makeMatchingProduct = function () use ($vendor, $category) {
+        $product = Product::factory()->create([
+            'vendor_id' => $vendor->id,
+            'category_id' => $category->id,
+            'name' => 'Searchable Widget',
+            'stock_quantity' => 5,
+            'status' => ProductStatus::Published,
+        ]);
+
+        Review::query()->create([
+            'product_id' => $product->id,
+            'user_id' => User::factory()->create()->id,
+            'rating' => 5,
+            'body' => 'Great.',
+            'is_visible' => true,
+        ]);
+
+        return $product;
+    };
+
+    foreach (range(1, 3) as $i) {
+        $makeMatchingProduct();
+    }
+
+    // A single combined update (rather than three chained ->set() calls,
+    // each of which is its own Livewire request/render round trip) keeps
+    // this an apples-to-apples comparison of one render's query count, not
+    // three renders' worth.
+    $filters = ['search' => 'Searchable', 'inStockOnly' => true, 'minRating' => '4'];
+
+    DB::enableQueryLog();
+    Livewire::test(ProductCatalog::class)->update([], $filters)->assertOk();
+    $smallPageCount = count(DB::getQueryLog());
+    DB::disableQueryLog();
+    DB::flushQueryLog();
+
+    foreach (range(1, 9) as $i) {
+        $makeMatchingProduct();
+    }
+
+    // 12 matching published products now -- a full page.
+    DB::enableQueryLog();
+    Livewire::test(ProductCatalog::class)->update([], $filters)->assertOk();
+    $fullPageCount = count(DB::getQueryLog());
+    DB::disableQueryLog();
+
+    expect($fullPageCount)->toBeLessThanOrEqual($smallPageCount);
+    expect($fullPageCount)->toBeLessThan(15);
+});
+
 test('the vendor shop page does not issue more queries as more products are shown on the page', function () {
     $vendor = VendorProfile::factory()->approved()->create(['shop_slug' => 'query-perf-shop']);
     $category = Category::factory()->create(['is_active' => true]);

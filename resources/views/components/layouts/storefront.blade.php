@@ -73,6 +73,27 @@
                     @endif
                 </a>
 
+                {{-- Header search: a plain GET form to /products?q= -- works with
+                     zero JS and before Livewire/Alpine hydrate. Only shown at
+                     `lg:` and up; the mobile nav drawer below carries an
+                     equivalent form for narrower viewports. --}}
+                <form action="{{ route('products.index') }}" method="GET" role="search" class="hidden max-w-md flex-1 lg:flex">
+                    <label for="header-search" class="sr-only">Search products</label>
+                    <div class="relative w-full">
+                        <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                        </svg>
+                        <input
+                            type="search"
+                            id="header-search"
+                            name="q"
+                            value="{{ request()->query('q') }}"
+                            placeholder="Search products&hellip;"
+                            class="block w-full rounded-md border border-gray-300 py-2 pl-9 pr-3 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                        >
+                    </div>
+                </form>
+
                 <div class="flex items-center gap-2 sm:gap-4">
                     {{-- Cart indicator and wishlist link stay visible at every breakpoint — never tucked inside the collapsed mobile menu. --}}
                     @auth
@@ -167,6 +188,23 @@
                 x-transition:leave-end="opacity-0 -translate-y-2"
                 class="border-t border-gray-200 bg-white px-4 py-4 sm:px-6 lg:hidden"
             >
+                <form action="{{ route('products.index') }}" method="GET" role="search" class="mb-3">
+                    <label for="mobile-header-search" class="sr-only">Search products</label>
+                    <div class="relative w-full">
+                        <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                        </svg>
+                        <input
+                            type="search"
+                            id="mobile-header-search"
+                            name="q"
+                            value="{{ request()->query('q') }}"
+                            placeholder="Search products&hellip;"
+                            class="block w-full rounded-md border border-gray-300 py-2 pl-9 pr-3 text-sm shadow-sm transition duration-150 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                        >
+                    </div>
+                </form>
+
                 <nav class="flex flex-col gap-1">
                     @auth
                         <span class="px-3 py-2 text-sm font-medium text-gray-500">{{ auth()->user()->name }}</span>

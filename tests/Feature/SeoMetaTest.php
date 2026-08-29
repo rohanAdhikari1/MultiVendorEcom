@@ -189,6 +189,22 @@ test('the product catalog title is generic with no active filter', function () {
     $response->assertSee('<title>Products - Marketplace</title>', false);
 });
 
+test('the product catalog title reflects an active search term', function () {
+    $response = $this->get(route('products.index', ['q' => 'wireless earbuds']));
+
+    $response->assertOk();
+    $response->assertSee('<title>Search results for &quot;wireless earbuds&quot; - Marketplace</title>', false);
+});
+
+test('the product catalog title prioritizes the search term over the category filter when both are active', function () {
+    $category = Category::factory()->create(['name' => 'Electronics', 'is_active' => true]);
+
+    $response = $this->get(route('products.index', ['category' => $category->slug, 'q' => 'earbuds']));
+
+    $response->assertOk();
+    $response->assertSee('<title>Search results for &quot;earbuds&quot; - Marketplace</title>', false);
+});
+
 test('the cart page gets its own title with no leftover product meta from a previous page', function () {
     $user = User::factory()->create();
 

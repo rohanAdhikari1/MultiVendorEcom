@@ -14,6 +14,7 @@ use App\Livewire\Storefront\ProductDetail;
 use App\Livewire\Storefront\VendorShopPage;
 use App\Livewire\Storefront\Wishlist;
 use App\Livewire\Vendor\Dashboard as VendorDashboard;
+use App\Livewire\Vendor\Earnings as VendorEarnings;
 use App\Livewire\Vendor\Onboarding\ApplicationForm as VendorApplicationForm;
 use App\Livewire\Vendor\Onboarding\ApplicationStatus as VendorApplicationStatus;
 use App\Livewire\Vendor\OrderManager as VendorOrderManager;
@@ -64,6 +65,8 @@ Route::prefix('vendor')->name('vendor.')->middleware(['auth', 'vendor.approved']
     Route::get('/products/{product}/edit', VendorProductForm::class)->name('products.edit');
 
     Route::get('/orders', VendorOrderManager::class)->name('orders.index');
+
+    Route::get('/earnings', VendorEarnings::class)->name('earnings');
 });
 
 // Gateway redirect-back callbacks arrive unauthenticated — the customer's

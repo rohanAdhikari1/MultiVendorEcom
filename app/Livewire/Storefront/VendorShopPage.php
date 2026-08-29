@@ -5,7 +5,9 @@ namespace App\Livewire\Storefront;
 use App\Enums\ProductStatus;
 use App\Enums\VendorApplicationStatus;
 use App\Models\VendorProfile;
+use App\Support\Seo;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -35,8 +37,14 @@ class VendorShopPage extends Component
             ->orderByDesc('created_at')
             ->paginate(12);
 
+        $ogImagePath = $this->vendor->logo_path ?? $this->vendor->banner_path;
+
         return view('livewire.storefront.vendor-shop-page', [
             'products' => $products,
+        ])->layoutData([
+            'title' => $this->vendor->shop_name,
+            'description' => Seo::excerpt($this->vendor->description),
+            'ogImage' => $ogImagePath ? Storage::disk('public')->url($ogImagePath) : null,
         ]);
     }
 }

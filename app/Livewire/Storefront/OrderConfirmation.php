@@ -26,6 +26,7 @@ class OrderConfirmation extends Component
 
     public function render(): View
     {
-        return view('livewire.storefront.order-confirmation');
+        return view('livewire.storefront.order-confirmation')
+            ->layoutData(['title' => "Order {$this->order->order_number} Confirmed"]);
     }
 }

@@ -99,6 +99,6 @@ class Cart extends Component
             'itemsByVendor' => $items->groupBy(fn (CartItem $item) => $item->vendor_id),
             'grandTotal' => $items->sum(fn (CartItem $item) => (float) $item->price_snapshot * $item->quantity),
             'isEmpty' => $items->isEmpty(),
-        ]);
+        ])->layoutData(['title' => 'Cart']);
     }
 }

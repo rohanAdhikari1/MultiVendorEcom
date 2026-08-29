@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PaymentCallbackController;
 use App\Http\Controllers\PaymentFormRedirectController;
+use App\Http\Controllers\SitemapController;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Storefront\Cart;
@@ -25,6 +26,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', Home::class)->name('home');
+
+Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
 Route::get('/products', ProductCatalog::class)->name('products.index');
 Route::get('/products/{slug}', ProductDetail::class)->name('products.show');

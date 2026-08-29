@@ -7,6 +7,17 @@
 
     $logoUrl = $settings->logo_path ? Storage::disk('public')->url($settings->logo_path) : null;
     $faviconUrl = $settings->favicon_path ? Storage::disk('public')->url($settings->favicon_path) : null;
+
+    // SEO meta: every storefront page renders through this layout, and any
+    // page can hand it `title`/`description`/`ogImage`/`ogType` via
+    // `->layoutData([...])` on the view it returns from render() (see
+    // App\Livewire\Storefront\ProductDetail for the fullest example). A
+    // page that supplies nothing still gets a complete, non-empty set of
+    // tags from these site-wide fallbacks -- there is no "half-built" head.
+    $pageTitle = isset($title) ? $title.' - '.$settings->site_name : $settings->site_name;
+    $metaDescription = $description ?? "Shop quality products from trusted local vendors on {$settings->site_name}.";
+    $metaImage = $ogImage ?? $logoUrl;
+    $metaType = $ogType ?? 'website';
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
@@ -14,7 +25,21 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>{{ isset($title) ? $title.' - '.$settings->site_name : $settings->site_name }}</title>
+        <title>{{ $pageTitle }}</title>
+
+        <meta name="description" content="{{ $metaDescription }}">
+
+        <meta property="og:site_name" content="{{ $settings->site_name }}">
+        <meta property="og:type" content="{{ $metaType }}">
+        <meta property="og:title" content="{{ $pageTitle }}">
+        <meta property="og:description" content="{{ $metaDescription }}">
+        @if ($metaImage)
+            <meta property="og:image" content="{{ $metaImage }}">
+        @endif
+
+        <meta name="twitter:card" content="{{ $metaImage ? 'summary_large_image' : 'summary' }}">
+        <meta name="twitter:title" content="{{ $pageTitle }}">
+        <meta name="twitter:description" content="{{ $metaDescription }}">
 
         @if ($faviconUrl)
             <link rel="icon" href="{{ $faviconUrl }}">

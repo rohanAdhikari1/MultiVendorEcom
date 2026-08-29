@@ -103,9 +103,16 @@ class ProductCatalog extends Component
             default => $query->orderByDesc('created_at'),
         };
 
+        $activeCategory = $this->categoryId ? Category::query()->find($this->categoryId) : null;
+
         return view('livewire.storefront.product-catalog', [
             'products' => $query->paginate(12),
             'categories' => $this->activeCategories(),
+        ])->layoutData([
+            'title' => $activeCategory ? "{$activeCategory->name} - Products" : 'Products',
+            'description' => $activeCategory
+                ? "Browse {$activeCategory->name} products from trusted local vendors."
+                : 'Browse our full catalog of products from trusted local vendors, with filters for category, price, and more.',
         ]);
     }
 }

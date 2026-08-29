@@ -49,8 +49,19 @@
                 </a>
 
                 <div class="flex items-center gap-2 sm:gap-4">
-                    {{-- Cart indicator stays visible at every breakpoint — never tucked inside the collapsed mobile menu. --}}
+                    {{-- Cart indicator and wishlist link stay visible at every breakpoint — never tucked inside the collapsed mobile menu. --}}
                     @auth
+                        <a
+                            href="{{ route('wishlist') }}"
+                            wire:navigate
+                            aria-label="Wishlist"
+                            class="flex h-10 w-10 items-center justify-center rounded-md text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900"
+                        >
+                            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 20.25c-.3 0-.6-.1-.83-.29C7.9 17.24 3 13.06 3 8.99 3 6.24 5.15 4 7.8 4c1.5 0 2.95.72 3.9 1.87.05.06.15.06.2 0C12.85 4.72 14.3 4 15.8 4 18.45 4 20.6 6.24 20.6 8.99c0 4.07-4.9 8.25-8.17 10.97-.23.19-.53.29-.83.29z" />
+                            </svg>
+                        </a>
+
                         <livewire:shared.cart-indicator />
                     @endauth
 
@@ -132,6 +143,13 @@
                 <nav class="flex flex-col gap-1">
                     @auth
                         <span class="px-3 py-2 text-sm font-medium text-gray-500">{{ auth()->user()->name }}</span>
+                        <a
+                            href="{{ route('wishlist') }}"
+                            wire:navigate
+                            class="rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900"
+                        >
+                            Wishlist
+                        </a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="block w-full rounded-md px-3 py-2 text-left text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900">

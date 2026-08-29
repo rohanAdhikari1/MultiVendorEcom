@@ -12,6 +12,7 @@ use App\Livewire\Storefront\OrderHistory;
 use App\Livewire\Storefront\ProductCatalog;
 use App\Livewire\Storefront\ProductDetail;
 use App\Livewire\Storefront\VendorShopPage;
+use App\Livewire\Storefront\Wishlist;
 use App\Livewire\Vendor\Dashboard as VendorDashboard;
 use App\Livewire\Vendor\Onboarding\ApplicationForm as VendorApplicationForm;
 use App\Livewire\Vendor\Onboarding\ApplicationStatus as VendorApplicationStatus;
@@ -46,6 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout', Checkout::class)->name('checkout');
     Route::get('/orders', OrderHistory::class)->name('orders.index');
     Route::get('/orders/{orderNumber}/confirmation', OrderConfirmation::class)->name('orders.confirmation');
+    Route::get('/wishlist', Wishlist::class)->name('wishlist');
 
     Route::get('/become-a-vendor', VendorApplicationForm::class)->name('vendor.apply');
     Route::get('/vendor/status', VendorApplicationStatus::class)->name('vendor.status');

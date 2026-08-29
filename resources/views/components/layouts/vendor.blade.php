@@ -10,6 +10,7 @@
         ['route' => 'vendor.products.index', 'label' => 'Products'],
         ['route' => 'vendor.orders.index', 'label' => 'Orders'],
         ['route' => 'vendor.reviews.index', 'label' => 'Reviews'],
+        ['route' => 'vendor.earnings', 'label' => 'Earnings'],
     ];
 @endphp
 <!DOCTYPE html>

@@ -63,6 +63,8 @@
                         </a>
 
                         <livewire:shared.cart-indicator />
+
+                        <livewire:shared.notification-bell />
                     @endauth
 
                     <nav class="hidden items-center gap-2 sm:gap-4 lg:flex">

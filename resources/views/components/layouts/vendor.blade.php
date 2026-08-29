@@ -32,9 +32,13 @@
     <body class="min-h-screen bg-gray-50 font-sans text-gray-900 antialiased">
         <div class="mx-auto flex max-w-7xl">
             <aside class="hidden w-56 shrink-0 border-r border-gray-200 bg-white lg:flex lg:min-h-screen lg:flex-col">
-                <div class="border-b border-gray-100 px-5 py-5">
-                    <p class="text-xs font-medium uppercase tracking-wide text-gray-400">Vendor Dashboard</p>
-                    <p class="mt-1 truncate text-sm font-semibold text-gray-900">{{ $vendorProfile?->shop_name ?? $settings->site_name }}</p>
+                <div class="flex items-start justify-between gap-2 border-b border-gray-100 px-5 py-5">
+                    <div class="min-w-0">
+                        <p class="text-xs font-medium uppercase tracking-wide text-gray-400">Vendor Dashboard</p>
+                        <p class="mt-1 truncate text-sm font-semibold text-gray-900">{{ $vendorProfile?->shop_name ?? $settings->site_name }}</p>
+                    </div>
+
+                    <livewire:shared.notification-bell />
                 </div>
 
                 <nav class="flex-1 space-y-1 px-3 py-4">
@@ -71,22 +75,26 @@
                     <div class="flex h-14 items-center justify-between gap-4 px-4">
                         <span class="truncate text-sm font-semibold text-primary">{{ $vendorProfile?->shop_name ?? 'Vendor Dashboard' }}</span>
 
-                        <button
-                            type="button"
-                            id="vendor-mobile-nav-toggle"
-                            class="inline-flex items-center justify-center rounded-md p-2 text-gray-700 transition-colors hover:bg-gray-100"
-                            x-on:click="mobileNavOpen = ! mobileNavOpen"
-                            :aria-expanded="mobileNavOpen.toString()"
-                            aria-controls="vendor-mobile-nav-panel"
-                            aria-label="Toggle navigation menu"
-                        >
-                            <svg x-show="! mobileNavOpen" viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
-                            </svg>
-                            <svg x-cloak x-show="mobileNavOpen" viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
+                        <div class="flex items-center gap-1">
+                            <livewire:shared.notification-bell />
+
+                            <button
+                                type="button"
+                                id="vendor-mobile-nav-toggle"
+                                class="inline-flex items-center justify-center rounded-md p-2 text-gray-700 transition-colors hover:bg-gray-100"
+                                x-on:click="mobileNavOpen = ! mobileNavOpen"
+                                :aria-expanded="mobileNavOpen.toString()"
+                                aria-controls="vendor-mobile-nav-panel"
+                                aria-label="Toggle navigation menu"
+                            >
+                                <svg x-show="! mobileNavOpen" viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+                                </svg>
+                                <svg x-cloak x-show="mobileNavOpen" viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
 
                     <nav

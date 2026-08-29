@@ -32,14 +32,20 @@
                 @enderror
             </div>
 
-            <div class="flex items-center">
-                <input
-                    type="checkbox"
-                    id="remember"
-                    wire:model="remember"
-                    class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                >
-                <label for="remember" class="ml-2 block text-sm text-gray-700">Remember me</label>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input
+                        type="checkbox"
+                        id="remember"
+                        wire:model="remember"
+                        class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                    >
+                    <label for="remember" class="ml-2 block text-sm text-gray-700">Remember me</label>
+                </div>
+
+                <a href="{{ route('password.request') }}" class="text-sm font-medium text-primary hover:opacity-90">
+                    Forgot your password?
+                </a>
             </div>
 
             <button

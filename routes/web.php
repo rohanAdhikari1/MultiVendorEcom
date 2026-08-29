@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\PaymentCallbackController;
 use App\Http\Controllers\PaymentFormRedirectController;
+use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\Auth\ResetPassword;
 use App\Livewire\Storefront\Cart;
 use App\Livewire\Storefront\Checkout;
 use App\Livewire\Storefront\Home;
@@ -21,6 +23,8 @@ use App\Livewire\Vendor\OrderManager as VendorOrderManager;
 use App\Livewire\Vendor\ProductManager\Form as VendorProductForm;
 use App\Livewire\Vendor\ProductManager\Index as VendorProductIndex;
 use App\Livewire\Vendor\ReviewManager as VendorReviewManager;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +37,8 @@ Route::get('/store/{slug}', VendorShopPage::class)->name('store.show');
 Route::middleware('guest')->group(function () {
     Route::get('/register', Register::class)->name('register');
     Route::get('/login', Login::class)->name('login');
+    Route::get('/forgot-password', ForgotPassword::class)->name('password.request');
+    Route::get('/reset-password/{token}', ResetPassword::class)->name('password.reset');
 });
 
 Route::post('/logout', function () {
@@ -43,6 +49,18 @@ Route::post('/logout', function () {
 
     return redirect()->route('home');
 })->middleware('auth')->name('logout');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return redirect()->route('home')->with('status', __('Your email address has been verified.'));
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+
+    return back()->with('status', 'verification-link-sent');
+})->middleware(['auth', 'throttle:1,1'])->name('verification.send');
 
 Route::middleware('auth')->group(function () {
     Route::get('/cart', Cart::class)->name('cart');

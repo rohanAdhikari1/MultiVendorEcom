@@ -188,6 +188,37 @@
             </div>
         </header>
 
+        @auth
+            @unless (auth()->user()->hasVerifiedEmail())
+                <div x-data="{ dismissed: false }" x-show="! dismissed" class="border-b border-amber-200 bg-amber-50">
+                    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2 px-4 py-2 text-sm text-amber-800 sm:px-6 lg:px-8">
+                        @if (session('status') === 'verification-link-sent')
+                            <p class="font-medium">A new verification link has been sent to your email address.</p>
+                        @else
+                            <p>
+                                Please verify your email address.
+                                <form method="POST" action="{{ route('verification.send') }}" class="inline">
+                                    @csrf
+                                    <button type="submit" class="font-medium underline hover:text-amber-900">
+                                        Resend verification email
+                                    </button>
+                                </form>
+                            </p>
+                        @endif
+
+                        <button
+                            type="button"
+                            x-on:click="dismissed = true"
+                            aria-label="Dismiss"
+                            class="rounded-md px-1 text-amber-600 transition-colors hover:text-amber-900"
+                        >
+                            &times;
+                        </button>
+                    </div>
+                </div>
+            @endunless
+        @endauth
+
         <main id="main-content" class="flex-1">
             {{ $slot }}
         </main>
